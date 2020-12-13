@@ -26,11 +26,74 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _once;
   Uint8List _captchaImg;
+  final _keyForm = GlobalKey<FormState>();
+  FocusNode focusNode = new FocusNode();
+  GlobalKey _keyCaptchaInput = GlobalKey();
+
+  OverlayEntry captchaOverlayEntry;
+
+  LayerLink layerLinkCaptchaInput = new LayerLink();
 
   @override
   void initState() {
     super.initState();
     this._getSigninWebPageData();
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        showCaptchaOverlay();
+      } else {
+        hideCaptchaOverlay();
+      }
+    });
+  }
+
+  void showCaptchaOverlay() {
+    captchaOverlayEntry = createSelectPopupWindow();
+    Overlay.of(context).insert(captchaOverlayEntry);
+  }
+
+  void hideCaptchaOverlay() {
+    if (captchaOverlayEntry != null) {
+      captchaOverlayEntry.remove();
+      captchaOverlayEntry = null;
+    }
+  }
+
+  OverlayEntry createSelectPopupWindow() {
+    final captchaImgHeight = 80.0;
+    final captchaImgWidth = captchaImgHeight * 4;
+    final viewportWidth = MediaQuery.of(context).size.width;
+
+    final RenderBox renderBoxCaptchaInput =
+        _keyCaptchaInput.currentContext.findRenderObject();
+    final position = renderBoxCaptchaInput.localToGlobal(Offset.zero);
+
+    final offsetLeft = (viewportWidth - captchaImgWidth) / 2 - position.dx;
+
+    OverlayEntry overlayEntry = new OverlayEntry(builder: (context) {
+      return new Positioned(
+        width: captchaImgWidth,
+        height: captchaImgHeight,
+        child: new CompositedTransformFollower(
+          offset: Offset(offsetLeft, -captchaImgHeight),
+          link: layerLinkCaptchaInput,
+          child: new Container(
+              color: Colors.black,
+              child: _captchaImg != null
+                  ? Image.memory(
+                      _captchaImg,
+                      width: captchaImgWidth,
+                      height: captchaImgHeight,
+                    )
+                  : Placeholder(
+                      fallbackWidth: captchaImgWidth,
+                      fallbackHeight: captchaImgHeight,
+                    )),
+        ),
+      );
+    });
+    return overlayEntry;
   }
 
   Future<void> _getSigninWebPageData() async {
@@ -76,6 +139,11 @@ class _LoginPageState extends State<LoginPage> {
       _once = once;
       _captchaImg = captchaImg;
     });
+
+    if (captchaOverlayEntry != null) {
+      hideCaptchaOverlay();
+      showCaptchaOverlay();
+    }
   }
 
   @override
@@ -113,10 +181,100 @@ class _LoginPageState extends State<LoginPage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            _captchaImg != null ? Image.memory(_captchaImg) : Placeholder()
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Form(
+                    key: _keyForm,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 80,
+                                padding: EdgeInsets.only(right: 20),
+                                child: Text(
+                                  '用户名',
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                              Flexible(
+                                child: TextFormField(
+                                  decoration: const InputDecoration(
+                                    hintText: '用户名',
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return '请输入用户名';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 80,
+                                padding: EdgeInsets.only(right: 20),
+                                child: Text(
+                                  '密码',
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                              Flexible(
+                                child: TextFormField(
+                                  obscureText: true,
+                                  decoration: const InputDecoration(
+                                    hintText: '密码',
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return '请输入密码';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 80,
+                                padding: EdgeInsets.only(right: 20),
+                                child: Text(
+                                  '验证码',
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                              Flexible(
+                                  child: CompositedTransformTarget(
+                                link: layerLinkCaptchaInput,
+                                child: TextFormField(
+                                  key: _keyCaptchaInput,
+                                  focusNode: focusNode,
+                                  decoration: const InputDecoration(
+                                    hintText: '验证码',
+                                  ),
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return '请输入验证码';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              )),
+                            ],
+                          ),
+                          ElevatedButton(onPressed: () {}, child: Text('登录'))
+                        ]))),
           ],
         ),
       ),
