@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
@@ -26,95 +27,51 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _once;
   Uint8List _captchaImg;
+  String _fieldNameName;
+  String _fieldPassName;
+  String _fieldCaptchaName;
+
+  Dio dio;
+
   final _keyForm = GlobalKey<FormState>();
-  FocusNode focusNode = new FocusNode();
-  GlobalKey _keyCaptchaInput = GlobalKey();
-
-  OverlayEntry captchaOverlayEntry;
-
-  LayerLink layerLinkCaptchaInput = new LayerLink();
+  final _nameController = TextEditingController();
+  final _passController = TextEditingController();
+  final _captchaController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    dio = Dio();
+    var cookieJar = CookieJar();
+    dio.interceptors.add(CookieManager(cookieJar));
     this._getSigninWebPageData();
-
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        showCaptchaOverlay();
-      } else {
-        hideCaptchaOverlay();
-      }
-    });
-  }
-
-  void showCaptchaOverlay() {
-    captchaOverlayEntry = createSelectPopupWindow();
-    Overlay.of(context).insert(captchaOverlayEntry);
-  }
-
-  void hideCaptchaOverlay() {
-    if (captchaOverlayEntry != null) {
-      captchaOverlayEntry.remove();
-      captchaOverlayEntry = null;
-    }
-  }
-
-  OverlayEntry createSelectPopupWindow() {
-    final captchaImgHeight = 80.0;
-    final captchaImgWidth = captchaImgHeight * 4;
-    final viewportWidth = MediaQuery.of(context).size.width;
-
-    final RenderBox renderBoxCaptchaInput =
-        _keyCaptchaInput.currentContext.findRenderObject();
-    final position = renderBoxCaptchaInput.localToGlobal(Offset.zero);
-
-    final offsetLeft = (viewportWidth - captchaImgWidth) / 2 - position.dx;
-
-    OverlayEntry overlayEntry = new OverlayEntry(builder: (context) {
-      return new Positioned(
-        width: captchaImgWidth,
-        height: captchaImgHeight,
-        child: new CompositedTransformFollower(
-          offset: Offset(offsetLeft, -captchaImgHeight),
-          link: layerLinkCaptchaInput,
-          child: new Container(
-              color: Colors.black,
-              child: _captchaImg != null
-                  ? Image.memory(
-                      _captchaImg,
-                      width: captchaImgWidth,
-                      height: captchaImgHeight,
-                    )
-                  : Placeholder(
-                      fallbackWidth: captchaImgWidth,
-                      fallbackHeight: captchaImgHeight,
-                    )),
-        ),
-      );
-    });
-    return overlayEntry;
   }
 
   Future<void> _getSigninWebPageData() async {
-    var dio = Dio();
-    var cookieJar = CookieJar();
-    dio.interceptors.add(CookieManager(cookieJar));
-
-    var url = 'https://www.v2ex.com/signin';
-
-    var r =
-        await dio.get(url, options: Options(responseType: ResponseType.plain));
+    var r = await dio.get('https://www.v2ex.com/signin',
+        options: Options(headers: {
+          HttpHeaders.userAgentHeader:
+              'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+        }, responseType: ResponseType.plain));
     final String body = r.data.toString();
 
     var document = parse(body);
     var loginForm = document.querySelector('form[method="post"]');
+
+    if (loginForm == null) {
+      return;
+    }
 
     var once;
     var inputOnce = loginForm.querySelector('input[name="once"]');
     if (inputOnce != null) {
       once = inputOnce.attributes['value'];
     }
+
+    final trs = loginForm.querySelectorAll('tr');
+    final fieldNameName = trs[0].querySelector('input').attributes['name'];
+    final fieldPassName = trs[1].querySelector('input').attributes['name'];
+    final fieldCaptchaName = trs[3].querySelector('input').attributes['name'];
 
     var captchaUrl;
     var captchaDiv = loginForm.querySelector('div[style^="background-image"]');
@@ -138,12 +95,48 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _once = once;
       _captchaImg = captchaImg;
+      _fieldNameName = fieldNameName;
+      _fieldPassName = fieldPassName;
+      _fieldCaptchaName = fieldCaptchaName;
     });
+  }
 
-    if (captchaOverlayEntry != null) {
-      hideCaptchaOverlay();
-      showCaptchaOverlay();
+  void _execLogin() async {
+    try {
+      FormData formData = FormData.fromMap({
+        _fieldNameName: _nameController.value.text,
+        _fieldPassName: _passController.value.text,
+        _fieldCaptchaName: _captchaController.value.text,
+        "once": _once
+      });
+      var res = await dio.post("https://www.v2ex.com/signin",
+          data: formData,
+          options: Options(responseType: ResponseType.plain, headers: {
+            HttpHeaders.userAgentHeader:
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
+          }));
+      print(res.data);
+    } on DioError catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response.data.toString());
+        print(e.response.headers);
+        print(e.response.request);
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.request);
+        print(e.message);
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _passController.dispose();
+    _captchaController.dispose();
+    super.dispose();
   }
 
   @override
@@ -154,6 +147,9 @@ class _LoginPageState extends State<LoginPage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
+    final captchaImgHeight = 40.0;
+    final captchaImgWidth = captchaImgHeight * 4;
 
     return Scaffold(
       appBar: AppBar(
@@ -185,6 +181,9 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Form(
                     key: _keyForm,
+                    onChanged: () {
+                      Form.of(primaryFocus.context).save();
+                    },
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -201,6 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               Flexible(
                                 child: TextFormField(
+                                  controller: _nameController,
                                   decoration: const InputDecoration(
                                     hintText: '用户名',
                                   ),
@@ -228,6 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               Flexible(
                                 child: TextFormField(
+                                  controller: _passController,
                                   obscureText: true,
                                   decoration: const InputDecoration(
                                     hintText: '密码',
@@ -255,11 +256,8 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               Flexible(
-                                  child: CompositedTransformTarget(
-                                link: layerLinkCaptchaInput,
                                 child: TextFormField(
-                                  key: _keyCaptchaInput,
-                                  focusNode: focusNode,
+                                  controller: _captchaController,
                                   decoration: const InputDecoration(
                                     hintText: '验证码',
                                   ),
@@ -270,10 +268,26 @@ class _LoginPageState extends State<LoginPage> {
                                     return null;
                                   },
                                 ),
-                              )),
+                              ),
+                              _captchaImg != null
+                                  ? Image.memory(
+                                      _captchaImg,
+                                      width: captchaImgWidth,
+                                      height: captchaImgHeight,
+                                    )
+                                  : Placeholder(
+                                      fallbackWidth: captchaImgWidth,
+                                      fallbackHeight: captchaImgHeight,
+                                    )
                             ],
                           ),
-                          ElevatedButton(onPressed: () {}, child: Text('登录'))
+                          ElevatedButton(
+                              onPressed: () {
+                                if (_keyForm.currentState.validate()) {
+                                  _execLogin();
+                                }
+                              },
+                              child: Text('登录'))
                         ]))),
           ],
         ),
