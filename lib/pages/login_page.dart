@@ -1,10 +1,7 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
+import 'package:vvex/services.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -31,8 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   String _fieldPassName;
   String _fieldCaptchaName;
 
-  Dio dio;
-
   final _keyForm = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _passController = TextEditingController();
@@ -41,21 +36,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    dio = Dio();
-    var cookieJar = CookieJar();
-    dio.interceptors.add(CookieManager(cookieJar));
     this._getSigninWebPageData();
   }
 
   Future<void> _getSigninWebPageData() async {
-    var r = await dio.get('https://www.v2ex.com/signin',
-        options: Options(headers: {
-          HttpHeaders.userAgentHeader:
-              'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
-        }, responseType: ResponseType.plain));
-    final String body = r.data.toString();
+    final html = await getSigninPageHTML();
 
-    var document = parse(body);
+    var document = parse(html);
     var loginForm = document.querySelector('form[method="post"]');
 
     if (loginForm == null) {
@@ -70,7 +57,8 @@ class _LoginPageState extends State<LoginPage> {
 
     final trs = loginForm.querySelectorAll('tr');
     final fieldNameName = trs[0].querySelector('input').attributes['name'];
-    final fieldPassName = trs[1].querySelector('input').attributes['name'];
+    final fieldPassName =
+        trs[1].querySelector('input[type="password"]').attributes['name'];
     final fieldCaptchaName = trs[3].querySelector('input').attributes['name'];
 
     var captchaUrl;
@@ -87,48 +75,31 @@ class _LoginPageState extends State<LoginPage> {
 
     var captchaImg;
     if (captchaUrl != null) {
-      r = await dio.get(captchaUrl,
-          options: Options(responseType: ResponseType.bytes));
-      captchaImg = r.data;
+      captchaImg = await getSigninCaptchaImage(captchaUrl);
     }
 
-    setState(() {
-      _once = once;
-      _captchaImg = captchaImg;
-      _fieldNameName = fieldNameName;
-      _fieldPassName = fieldPassName;
-      _fieldCaptchaName = fieldCaptchaName;
-    });
+    if (this.mounted) {
+      setState(() {
+        _once = once;
+        _captchaImg = captchaImg;
+        _fieldNameName = fieldNameName;
+        _fieldPassName = fieldPassName;
+        _fieldCaptchaName = fieldCaptchaName;
+      });
+    }
   }
 
   void _execLogin() async {
-    try {
-      FormData formData = FormData.fromMap({
-        _fieldNameName: _nameController.value.text,
-        _fieldPassName: _passController.value.text,
-        _fieldCaptchaName: _captchaController.value.text,
-        "once": _once
-      });
-      var res = await dio.post("https://www.v2ex.com/signin",
-          data: formData,
-          options: Options(responseType: ResponseType.plain, headers: {
-            HttpHeaders.userAgentHeader:
-                'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
-          }));
-      print(res.data);
-    } on DioError catch (e) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx and is also not 304.
-      if (e.response != null) {
-        print(e.response.data.toString());
-        print(e.response.headers);
-        print(e.response.request);
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print(e.request);
-        print(e.message);
-      }
-    }
+    var args = {
+      _fieldNameName: _nameController.value.text,
+      _fieldPassName: _passController.value.text,
+      _fieldCaptchaName: _captchaController.value.text,
+      "once": _once,
+      "next": "/"
+    };
+    var res = await signin(args);
+    print(res.data.toString());
+    print(res.headers);
   }
 
   @override
