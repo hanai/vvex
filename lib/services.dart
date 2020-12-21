@@ -6,17 +6,29 @@ import 'package:html/parser.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/http.dart';
 
-Future<Response<T>> signin<T>(Map<String, dynamic> args) async {
+Future<bool> signin(Map<String, dynamic> args) {
   final http = new Http();
-  return await http.postForm("https://www.v2ex.com/signin",
-      data: args,
-      options: Options(
-          responseType: ResponseType.plain,
-          headers: {HttpHeaders.refererHeader: 'https://www.v2ex.com/signin'},
-          followRedirects: false,
-          validateStatus: (status) {
-            return status == 200 || status == 302;
-          }));
+  return http
+      .postForm("https://www.v2ex.com/signin",
+          data: args,
+          options: Options(
+              responseType: ResponseType.plain,
+              headers: {
+                HttpHeaders.refererHeader: 'https://www.v2ex.com/signin'
+              },
+              followRedirects: false,
+              validateStatus: (status) {
+                return status == 200 || status == 302;
+              }))
+      .then((res) {
+    final headersMap = res.headers.map;
+    if (headersMap.containsKey('set-cookie') &&
+        headersMap['set-cookie'].length > 1) {
+      return true;
+    } else {
+      return false;
+    }
+  });
 }
 
 Future<Uint8List> getSigninCaptchaImage(String url) async {
@@ -66,15 +78,12 @@ Future<List<Topic>> getNodeTopics(String node) async {
 
 Future getTopicDetail(int id) async {
   final http = new Http();
-  print('https://www.v2ex.com/t/' + id.toString());
   final html = await http.getHTML('https://www.v2ex.com/t/' + id.toString());
   final $document = parse(html);
   final $body = $document.querySelector('body');
+  print($body.text.substring(0, 500));
   final $wrapper = $body.querySelector('#Wrapper');
   final $content = $wrapper.querySelector('.content');
-  print($content.innerHtml);
-  final String content =
-      $content.querySelector('.topic_content')?.innerHtml ?? '';
-  print(content);
+  final String content = $content.querySelector('.topic_content').innerHtml;
   return {"content": content};
 }

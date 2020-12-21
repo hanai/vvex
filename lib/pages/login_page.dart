@@ -74,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     var captchaImg;
+    print('captcha image url: ' + captchaUrl);
     if (captchaUrl != null) {
       captchaImg = await getSigninCaptchaImage(captchaUrl);
     }
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _execLogin() async {
+  void _execLogin(BuildContext context) async {
     var args = {
       _fieldNameName: _nameController.value.text,
       _fieldPassName: _passController.value.text,
@@ -97,9 +98,14 @@ class _LoginPageState extends State<LoginPage> {
       "once": _once,
       "next": "/"
     };
-    var res = await signin(args);
-    print(res.data.toString());
-    print(res.headers);
+    final res = await signin(args);
+    if (res) {
+      Navigator.pop(context);
+    } else {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text("登录失败"),
+      ));
+    }
   }
 
   @override
@@ -156,10 +162,10 @@ class _LoginPageState extends State<LoginPage> {
                       Form.of(primaryFocus.context).save();
                     },
                     child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 width: 80,
@@ -252,13 +258,17 @@ class _LoginPageState extends State<LoginPage> {
                                     )
                             ],
                           ),
-                          ElevatedButton(
-                              onPressed: () {
-                                if (_keyForm.currentState.validate()) {
-                                  _execLogin();
-                                }
-                              },
-                              child: Text('登录'))
+                          Builder(
+                            builder: (BuildContext context) {
+                              return ElevatedButton(
+                                  onPressed: () {
+                                    if (_keyForm.currentState.validate()) {
+                                      _execLogin(context);
+                                    }
+                                  },
+                                  child: Text('登录'));
+                            },
+                          )
                         ]))),
           ],
         ),
