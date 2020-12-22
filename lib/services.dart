@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/http.dart';
 
@@ -81,7 +82,12 @@ Future getTopicDetail(int id) async {
   final html = await http.getHTML('https://www.v2ex.com/t/' + id.toString());
   final $document = parse(html);
   final $body = $document.querySelector('body');
-  print($body.text.substring(0, 500));
+  final prefs = await SharedPreferences.getInstance();
+  final signed = prefs.getBool("signed");
+  final hasSignBtn = $body.querySelector('a[href="/signin"]') != null;
+  if (signed == null || (signed == hasSignBtn)) {
+    prefs.setBool("signed", !hasSignBtn);
+  }
   final $wrapper = $body.querySelector('#Wrapper');
   final $content = $wrapper.querySelector('.content');
   final String content = $content.querySelector('.topic_content').innerHtml;

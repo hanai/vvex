@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:vvex/pages/topic_detail_page.dart';
 import 'package:vvex/types.dart';
@@ -5,9 +6,7 @@ import 'package:vvex/types.dart';
 class TopicListTopicItem {
   Topic _topic;
 
-  TopicListTopicItem(Topic topic) {
-    this._topic = topic;
-  }
+  TopicListTopicItem(this._topic);
 
   Widget itemBuilder(BuildContext context, int index) {
     return Column(
@@ -35,10 +34,12 @@ class TopicListTopicItem {
                       child: Column(
                         children: [
                           Container(
-                            width: 48,
-                            height: 48,
-                            child: Image.network(this._topic.avatar),
-                          ),
+                              width: 48,
+                              height: 48,
+                              child: CachedNetworkImage(
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  imageUrl: this._topic.avatar)),
                           Container(
                             padding: EdgeInsets.only(top: 6),
                             child: Text(

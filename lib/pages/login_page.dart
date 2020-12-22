@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
     if (res) {
       Navigator.pop(context);
     } else {
-      Scaffold.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("登录失败"),
       ));
     }
