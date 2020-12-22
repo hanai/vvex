@@ -28,6 +28,7 @@ dependencies:
   cookie_jar: ^1.0.0
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
+  flutter_svg: ^0.19.2+1
   path_provider: ^1.6.24
   flutter_html: ^1.1.1
 
