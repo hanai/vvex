@@ -77,6 +77,32 @@ Future<List<Topic>> getNodeTopics(String node) async {
   return topics;
 }
 
+Future<List<Topic>> getTabTopics(String tab) async {
+  final http = new Http();
+  final html = await http.getHTML('https://www.v2ex.com/?tab=' + tab);
+  var $document = parse(html);
+  var $cells = $document.querySelectorAll('#Wrapper .cell.item');
+
+  var topics = $cells.where(($cell) {
+    return $cell.querySelector('.topic-link') != null;
+  }).map(($cell) {
+    final $topicLink = $cell.querySelector('.topic-link');
+    final link = $topicLink.attributes['href'];
+    RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
+    var match = reg.firstMatch(link);
+    final topicId = int.parse(match.group(1));
+    return Topic(
+        id: topicId,
+        title: $topicLink.text,
+        link: $topicLink.attributes['href'],
+        replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
+        author: $cell.querySelector('strong')?.text ?? '',
+        avatar: $cell.querySelector('.avatar').attributes['src']);
+  }).toList();
+
+  return topics;
+}
+
 Future getTopicDetail(int id) async {
   final http = new Http();
   final html = await http.getHTML('https://www.v2ex.com/t/' + id.toString());
