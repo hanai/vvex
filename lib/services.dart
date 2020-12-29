@@ -121,12 +121,28 @@ Future getTopicDetail(int id) async {
   final $body = $document.querySelector('body');
   final prefs = await SharedPreferences.getInstance();
   final signed = prefs.getBool("signed");
+
   final hasSignBtn = $body.querySelector('a[href="/signin"]') != null;
-  if (!signed || (signed == hasSignBtn)) {
+  if (signed == null || !signed || (signed == hasSignBtn)) {
     prefs.setBool("signed", !hasSignBtn);
   }
   final $wrapper = $body.querySelector('#Wrapper');
   final $content = $wrapper.querySelector('.content');
   final content = $content.querySelector('.topic_content')?.innerHtml ?? '';
-  return {"content": content};
+
+  final $replys = $content.querySelectorAll('.cell').where((el) {
+    final $avatar = el.querySelector('img.avatar');
+    return $avatar != null;
+  });
+  final replys = $replys.map(($el) {
+    final $avatar = $el.querySelector('img.avatar');
+    final avatar = $avatar.attributes['src'];
+    final $memberName = $el.querySelector('strong a.dark');
+    final memberName = $memberName.text;
+    final $replyContent = $el.querySelector('.reply_content');
+    final content = $replyContent.innerHtml;
+    return new TopicReply(
+        avatar: avatar!, memberName: memberName, content: content);
+  }).toList();
+  return {"content": content, "replys": replys};
 }

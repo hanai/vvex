@@ -16,3 +16,12 @@ class Topic {
       required this.avatar,
       this.content});
 }
+
+class TopicReply {
+  String avatar;
+  String memberName;
+  String content;
+
+  TopicReply(
+      {required this.avatar, required this.memberName, required this.content});
+}
