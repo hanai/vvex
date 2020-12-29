@@ -2,9 +2,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:vvex/services.dart';
-import 'package:vvex/types.dart';
+
+import '../response.dart';
 
 class TopicDetailPage extends StatefulWidget {
   TopicDetailPage({Key? key, required this.title, required this.topicId})
@@ -19,13 +20,19 @@ class TopicDetailPage extends StatefulWidget {
 
 class _TopicDetailPageState extends State<TopicDetailPage> {
   String _topicContent = '';
-  List<TopicReply> _topicReplys = [];
+  List<Reply> _topicReplys = [];
 
   @override
   void initState() {
     super.initState();
 
     this._getTopicDetail();
+
+    getTopicReplies(widget.topicId).then((value) {
+      setState(() {
+        _topicReplys = value;
+      });
+    });
   }
 
   _getTopicDetail() async {
@@ -34,7 +41,6 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     if (this.mounted) {
       setState(() {
         _topicContent = data['content'];
-        _topicReplys = data['replys'];
       });
     }
   }
@@ -56,9 +62,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Text(widget.title),
-              Html(
-                data: _topicContent,
-              ),
+              MarkdownBody(data: _topicContent),
               Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -69,10 +73,12 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             CachedNetworkImage(
-                                imageUrl: reply.avatar,
+                                imageUrl: reply.member.avatarNormal,
                                 width: 40,
                                 height: 40,
-                                fit: BoxFit.cover),
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                fit: BoxFit.contain),
                           ]),
                       Flexible(
                           flex: 1,
@@ -80,7 +86,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Text(reply.memberName),
+                                Text(reply.member.avatarNormal),
                                 Text(reply.content)
                               ]))
                     ]);

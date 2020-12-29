@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vvex/response.dart' as resp;
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/http.dart';
 
@@ -114,35 +115,21 @@ Future<List<Topic>> getTabTopics(String tab) async {
   return topics;
 }
 
+Future getTopicReplies(int topicId) async {
+  final http = new Http();
+  final res = await http.get<List<dynamic>>(
+      'https://www.v2ex.com/api/replies/show.json?topic_id=' +
+          topicId.toString());
+  final List<resp.Reply> replies =
+      res.data.map((e) => resp.Reply.fromJson(e)).toList();
+  return replies;
+}
+
 Future getTopicDetail(int id) async {
   final http = new Http();
-  final html = await http.getHTML('https://www.v2ex.com/t/' + id.toString());
-  final $document = parse(html);
-  final $body = $document.querySelector('body');
-  final prefs = await SharedPreferences.getInstance();
-  final signed = prefs.getBool("signed");
+  final res = await http.get<List<dynamic>>(
+      'https://www.v2ex.com/api/topics/show.json?id=' + id.toString());
+  final resp.Topic topic = resp.Topic.fromJson(res.data[0]);
 
-  final hasSignBtn = $body.querySelector('a[href="/signin"]') != null;
-  if (signed == null || !signed || (signed == hasSignBtn)) {
-    prefs.setBool("signed", !hasSignBtn);
-  }
-  final $wrapper = $body.querySelector('#Wrapper');
-  final $content = $wrapper.querySelector('.content');
-  final content = $content.querySelector('.topic_content')?.innerHtml ?? '';
-
-  final $replys = $content.querySelectorAll('.cell').where((el) {
-    final $avatar = el.querySelector('img.avatar');
-    return $avatar != null;
-  });
-  final replys = $replys.map(($el) {
-    final $avatar = $el.querySelector('img.avatar');
-    final avatar = $avatar.attributes['src'];
-    final $memberName = $el.querySelector('strong a.dark');
-    final memberName = $memberName.text;
-    final $replyContent = $el.querySelector('.reply_content');
-    final content = $replyContent.innerHtml;
-    return new TopicReply(
-        avatar: avatar!, memberName: memberName, content: content);
-  }).toList();
-  return {"content": content, "replys": replys};
+  return {"content": topic.content};
 }

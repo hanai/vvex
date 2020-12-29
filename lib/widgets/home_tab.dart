@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/services.dart';
-import 'package:vvex/widgets/topic_list.dart';
+import 'package:vvex/widgets/topic_list_topic_item.dart';
 
 class HomeTab extends StatefulWidget {
   HomeTab({Key? key}) : super(key: key);

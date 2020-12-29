@@ -38,6 +38,7 @@ class TopicListTopicItem {
                               width: 48,
                               height: 48,
                               child: CachedNetworkImage(
+                                  fit: BoxFit.contain,
                                   placeholder: (context, url) =>
                                       CircularProgressIndicator(),
                                   imageUrl: this._topic.avatar)),
