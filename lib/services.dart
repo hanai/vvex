@@ -1,8 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/http.dart';
@@ -23,12 +26,14 @@ Future<bool> signin(Map<String, dynamic> args) {
               }))
       .then((res) {
     final headersMap = res.headers.map;
-    if (headersMap.containsKey('set-cookie') &&
-        headersMap['set-cookie'].length > 1) {
-      return true;
-    } else {
-      return false;
+
+    if (headersMap.containsKey('set-cookie')) {
+      final vals = headersMap['set-cookie'];
+      if (vals != null && vals.length > 1) {
+        return true;
+      }
     }
+    return false;
   });
 }
 
@@ -61,17 +66,20 @@ Future<List<Topic>> getNodeTopics(String node) async {
     return $cell.querySelector('.topic-link') != null;
   }).map(($cell) {
     final $topicLink = $cell.querySelector('.topic-link');
-    final link = $topicLink.attributes['href'];
+    final link = $topicLink.attributes['href']!;
     RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
     var match = reg.firstMatch(link);
-    final topicId = int.parse(match.group(1));
+    int topicId = 0;
+    if (match != null && match.groupCount > 0) {
+      topicId = int.parse(match.group(1)!);
+    }
     return Topic(
         id: topicId,
         title: $topicLink.text,
         link: $topicLink.attributes['href'],
-        replies: int.parse($cell.querySelector('.count_livid')?.text) ?? 0,
+        replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
         author: $cell.querySelector('strong')?.text ?? '',
-        avatar: $cell.querySelector('.avatar').attributes['src']);
+        avatar: $cell.querySelector('.avatar').attributes['src']!);
   }).toList();
 
   return topics;
@@ -87,17 +95,20 @@ Future<List<Topic>> getTabTopics(String tab) async {
     return $cell.querySelector('.topic-link') != null;
   }).map(($cell) {
     final $topicLink = $cell.querySelector('.topic-link');
-    final link = $topicLink.attributes['href'];
+    final String link = $topicLink.attributes['href']!;
     RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
     var match = reg.firstMatch(link);
-    final topicId = int.parse(match.group(1));
+    int topicId = 0;
+    if (match != null && match.groupCount > 0) {
+      topicId = int.parse(match.group(1)!);
+    }
     return Topic(
         id: topicId,
         title: $topicLink.text,
         link: $topicLink.attributes['href'],
         replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
         author: $cell.querySelector('strong')?.text ?? '',
-        avatar: $cell.querySelector('.avatar').attributes['src']);
+        avatar: $cell.querySelector('.avatar').attributes['src']!);
   }).toList();
 
   return topics;
@@ -111,11 +122,11 @@ Future getTopicDetail(int id) async {
   final prefs = await SharedPreferences.getInstance();
   final signed = prefs.getBool("signed");
   final hasSignBtn = $body.querySelector('a[href="/signin"]') != null;
-  if (signed == null || (signed == hasSignBtn)) {
+  if (!signed || (signed == hasSignBtn)) {
     prefs.setBool("signed", !hasSignBtn);
   }
   final $wrapper = $body.querySelector('#Wrapper');
   final $content = $wrapper.querySelector('.content');
-  final String content = $content.querySelector('.topic_content').innerHtml;
+  final content = $content.querySelector('.topic_content')?.innerHtml ?? '';
   return {"content": content};
 }

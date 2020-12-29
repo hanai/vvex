@@ -3,18 +3,7 @@ import 'package:vvex/services.dart';
 import 'package:vvex/widgets/topic_list.dart';
 
 class HomeTab extends StatefulWidget {
-  HomeTab({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  HomeTab({Key? key}) : super(key: key);
 
   @override
   _HomeTabState createState() => _HomeTabState();
@@ -75,7 +64,7 @@ class _HomeTabState extends State<HomeTab> {
 }
 
 class TabView extends StatefulWidget {
-  TabView({Key key, this.tab}) : super(key: key);
+  TabView({Key? key, required this.tab}) : super(key: key);
 
   final String tab;
 

@@ -1,18 +1,18 @@
 class Topic {
   int id;
   String title;
-  String link;
+  String? link;
   int replies;
   String author;
   String avatar;
-  String content;
+  String? content;
 
   Topic(
-      {this.id,
-      this.title,
+      {required this.id,
+      required this.title,
       this.link,
-      this.replies,
-      this.author,
-      this.avatar,
+      required this.replies,
+      required this.author,
+      required this.avatar,
       this.content});
 }

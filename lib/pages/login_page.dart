@@ -1,10 +1,11 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart' show parse;
 import 'package:vvex/services.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title}) : super(key: key);
+  LoginPage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -22,11 +23,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _once;
-  Uint8List _captchaImg;
-  String _fieldNameName;
-  String _fieldPassName;
-  String _fieldCaptchaName;
+  String? _once;
+  Uint8List? _captchaImg;
+  String? _fieldNameName;
+  String? _fieldPassName;
+  String? _fieldCaptchaName;
 
   final _keyForm = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -56,20 +57,20 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     final trs = loginForm.querySelectorAll('tr');
-    final fieldNameName = trs[0].querySelector('input').attributes['name'];
+    final fieldNameName = trs[0].querySelector('input').attributes['name']!;
     final fieldPassName =
-        trs[1].querySelector('input[type="password"]').attributes['name'];
-    final fieldCaptchaName = trs[3].querySelector('input').attributes['name'];
+        trs[1].querySelector('input[type="password"]').attributes['name']!;
+    final fieldCaptchaName = trs[3].querySelector('input').attributes['name']!;
 
     var captchaUrl;
     var captchaDiv = loginForm.querySelector('div[style^="background-image"]');
     if (captchaDiv != null) {
       RegExp exp = new RegExp(r"url\('(.+)'\)");
-      final match = exp.firstMatch(captchaDiv.attributes['style']);
+      final match = exp.firstMatch(captchaDiv.attributes['style']!);
       if (match != null &&
           match.groupCount > 0 &&
-          match.group(1).startsWith('/')) {
-        captchaUrl = 'https://www.v2ex.com' + match.group(1);
+          match.group(1)!.startsWith('/')) {
+        captchaUrl = 'https://www.v2ex.com' + match.group(1)!;
       }
     }
 
@@ -92,9 +93,9 @@ class _LoginPageState extends State<LoginPage> {
 
   void _execLogin(BuildContext context) async {
     var args = {
-      _fieldNameName: _nameController.value.text,
-      _fieldPassName: _passController.value.text,
-      _fieldCaptchaName: _captchaController.value.text,
+      _fieldNameName!: _nameController.value.text,
+      _fieldPassName!: _passController.value.text,
+      _fieldCaptchaName!: _captchaController.value.text,
       "once": _once,
       "next": "/"
     };
@@ -159,7 +160,10 @@ class _LoginPageState extends State<LoginPage> {
                 child: Form(
                     key: _keyForm,
                     onChanged: () {
-                      Form.of(primaryFocus.context).save();
+                      final ctx = primaryFocus?.context;
+                      if (ctx != null) {
+                        Form.of(ctx)?.save();
+                      }
                     },
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -182,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                                     hintText: '用户名',
                                   ),
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value != null && value.isEmpty) {
                                       return '请输入用户名';
                                     }
                                     return null;
@@ -211,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                                     hintText: '密码',
                                   ),
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value != null && value.isEmpty) {
                                       return '请输入密码';
                                     }
                                     return null;
@@ -239,7 +243,7 @@ class _LoginPageState extends State<LoginPage> {
                                     hintText: '验证码',
                                   ),
                                   validator: (value) {
-                                    if (value.isEmpty) {
+                                    if (value != null && value.isEmpty) {
                                       return '请输入验证码';
                                     }
                                     return null;
@@ -248,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               _captchaImg != null
                                   ? Image.memory(
-                                      _captchaImg,
+                                      _captchaImg!,
                                       width: captchaImgWidth,
                                       height: captchaImgHeight,
                                     )
@@ -262,7 +266,8 @@ class _LoginPageState extends State<LoginPage> {
                             builder: (BuildContext context) {
                               return ElevatedButton(
                                   onPressed: () {
-                                    if (_keyForm.currentState.validate()) {
+                                    if (_keyForm.currentState?.validate() ??
+                                        false) {
                                       _execLogin(context);
                                     }
                                   },

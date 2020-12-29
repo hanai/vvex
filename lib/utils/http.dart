@@ -1,8 +1,12 @@
 import 'dart:io';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:cookie_jar/cookie_jar.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:path_provider/path_provider.dart';
 
 class UAInterceptor extends InterceptorsWrapper {
@@ -34,10 +38,10 @@ class Http {
   Http._internal();
 
   Future<Response<T>> get<T>(String path,
-      {Map<String, dynamic> queryParameters,
-      Options options,
-      CancelToken cancelToken,
-      void Function(int, int) onReceiveProgress}) {
+      {Map<String, dynamic>? queryParameters,
+      Options? options,
+      CancelToken? cancelToken,
+      void Function(int, int)? onReceiveProgress}) {
     return _dio.get(path,
         queryParameters: queryParameters,
         options: options,
@@ -47,11 +51,11 @@ class Http {
 
   Future<Response<T>> postForm<T>(String path,
       {data,
-      Map<String, dynamic> queryParameters,
-      Options options,
-      CancelToken cancelToken,
-      ProgressCallback onSendProgress,
-      ProgressCallback onReceiveProgress}) {
+      Map<String, dynamic>? queryParameters,
+      Options? options,
+      CancelToken? cancelToken,
+      ProgressCallback? onSendProgress,
+      ProgressCallback? onReceiveProgress}) {
     FormData formData = FormData.fromMap(data);
     return _dio.post(path,
         data: formData,
@@ -63,10 +67,10 @@ class Http {
   }
 
   Future<String> getHTML<T>(String path,
-      {Map<String, dynamic> queryParameters,
-      Options options,
-      CancelToken cancelToken,
-      void Function(int, int) onReceiveProgress}) async {
+      {Map<String, dynamic>? queryParameters,
+      Options? options,
+      CancelToken? cancelToken,
+      void Function(int, int)? onReceiveProgress}) async {
     if (options == null) {
       options = Options();
     }

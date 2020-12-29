@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_html/flutter_html.dart';
 import 'package:vvex/services.dart';
 
 class TopicDetailPage extends StatefulWidget {
-  TopicDetailPage({Key key, this.title, this.topicId}) : super(key: key);
+  TopicDetailPage({Key? key, required this.title, required this.topicId})
+      : super(key: key);
 
   final String title;
   final int topicId;
