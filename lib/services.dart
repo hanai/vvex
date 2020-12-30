@@ -5,9 +5,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vvex/response.dart' as resp;
+import 'package:vvex/ret.dart' as ret;
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/http.dart';
 
@@ -120,8 +118,8 @@ Future getTopicReplies(int topicId) async {
   final res = await http.get<List<dynamic>>(
       'https://www.v2ex.com/api/replies/show.json?topic_id=' +
           topicId.toString());
-  final List<resp.Reply> replies =
-      res.data.map((e) => resp.Reply.fromJson(e)).toList();
+  final List<ret.Reply> replies =
+      res.data.map((e) => ret.Reply.fromJson(e)).toList();
   return replies;
 }
 
@@ -129,7 +127,7 @@ Future getTopicDetail(int id) async {
   final http = new Http();
   final res = await http.get<List<dynamic>>(
       'https://www.v2ex.com/api/topics/show.json?id=' + id.toString());
-  final resp.Topic topic = resp.Topic.fromJson(res.data[0]);
+  final ret.Topic topic = ret.Topic.fromJson(res.data[0]);
 
   return {"content": topic.content};
 }

@@ -1,15 +1,22 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'response.g.dart';
+part 'ret.g.dart';
 
 @JsonSerializable()
 class Reply {
   String content;
+  int created;
+  int id;
+  @JsonKey(name: 'last_modified')
+  int lastModified;
   Member member;
+  @JsonKey(name: 'member_id')
+  int memberId;
   @JsonKey(name: 'topic_id')
   int topicId;
 
-  Reply(this.content, this.member, this.topicId);
+  Reply(this.content, this.created, this.id, this.lastModified, this.member,
+      this.topicId, this.memberId);
 
   factory Reply.fromJson(Map<String, dynamic> json) => _$ReplyFromJson(json);
   Map<String, dynamic> toJson() => _$ReplyToJson(this);
@@ -17,8 +24,6 @@ class Reply {
 
 @JsonSerializable()
 class Member {
-  String username;
-
   @JsonKey(name: 'avatar_large')
   String avatarLarge;
 
@@ -28,7 +33,13 @@ class Member {
   @JsonKey(name: 'avatar_normal')
   String avatarNormal;
 
-  Member(this.avatarLarge, this.avatarMini, this.avatarNormal, this.username);
+  int created;
+  int id;
+  String? github;
+  String username;
+
+  Member(this.avatarLarge, this.avatarMini, this.avatarNormal, this.created,
+      this.id, this.github, this.username);
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
   Map<String, dynamic> toJson() => _$MemberToJson(this);

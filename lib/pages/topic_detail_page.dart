@@ -3,9 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vvex/services.dart';
 
-import '../response.dart';
+import '../ret.dart';
 
 class TopicDetailPage extends StatefulWidget {
   TopicDetailPage({Key? key, required this.title, required this.topicId})
@@ -62,7 +63,15 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Text(widget.title),
-              MarkdownBody(data: _topicContent),
+              Container(
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                child: MarkdownBody(
+                    data: _topicContent,
+                    onTapLink: (text, href, title) {
+                      print(href);
+                      launch(href);
+                    }),
+              ),
               Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,

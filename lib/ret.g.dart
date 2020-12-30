@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'response.dart';
+part of 'ret.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -9,14 +9,22 @@ part of 'response.dart';
 Reply _$ReplyFromJson(Map<String, dynamic> json) {
   return Reply(
     json['content'] as String,
+    json['created'] as int,
+    json['id'] as int,
+    json['last_modified'] as int,
     Member.fromJson(json['member'] as Map<String, dynamic>),
     json['topic_id'] as int,
+    json['member_id'] as int,
   );
 }
 
 Map<String, dynamic> _$ReplyToJson(Reply instance) => <String, dynamic>{
       'content': instance.content,
+      'created': instance.created,
+      'id': instance.id,
+      'last_modified': instance.lastModified,
       'member': instance.member,
+      'member_id': instance.memberId,
       'topic_id': instance.topicId,
     };
 
@@ -25,15 +33,21 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
     json['avatar_large'] as String,
     json['avatar_mini'] as String,
     json['avatar_normal'] as String,
+    json['created'] as int,
+    json['id'] as int,
+    json['github'] as String?,
     json['username'] as String,
   );
 }
 
 Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
-      'username': instance.username,
       'avatar_large': instance.avatarLarge,
       'avatar_mini': instance.avatarMini,
       'avatar_normal': instance.avatarNormal,
+      'created': instance.created,
+      'id': instance.id,
+      'github': instance.github,
+      'username': instance.username,
     };
 
 Topic _$TopicFromJson(Map<String, dynamic> json) {

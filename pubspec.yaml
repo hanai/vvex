@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sqflite:
+  path:
+  url_launcher:
   http: ^0.12.2
   html: ^0.14.0+4
   cookie_jar: ^1.0.0
