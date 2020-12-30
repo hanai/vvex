@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:vvex/pages/webview_page.dart';
 import 'package:vvex/services.dart';
 
 import '../ret.dart';
@@ -68,8 +68,15 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                 child: MarkdownBody(
                     data: _topicContent,
                     onTapLink: (text, href, title) {
-                      print(href);
-                      launch(href);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WebviewPage(
+                                url: href,
+                                title: title != null && title.length > 0
+                                    ? title
+                                    : text)),
+                      );
                     }),
               ),
               Column(
