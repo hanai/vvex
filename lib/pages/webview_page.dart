@@ -19,6 +19,7 @@ class WebviewPage extends StatefulWidget {
 
 class _WebviewPageState extends State<WebviewPage> {
   String _title = '';
+  WebViewController? _webViewController;
 
   @override
   void initState() {
@@ -27,30 +28,56 @@ class _WebviewPageState extends State<WebviewPage> {
     this._title = widget.title;
   }
 
+  void updatePageTitle() async {
+    final res =
+        await _webViewController?.evaluateJavascript("document.title") ?? '';
+    setState(() {
+      _title = res;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(_title),
-        ),
-        body: WebView(
-          navigationDelegate: (req) {
-            final url = req.url;
-            if (url.startsWith('http://') ||
-                url.startsWith('https://') ||
-                url.startsWith('//')) {
-              return NavigationDecision.navigate;
-            } else {
-              return canLaunch(req.url).then((res) {
-                if (res) {
-                  launch(url);
+    return WillPopScope(
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text(_title),
+            ),
+            body: WebView(
+              onWebViewCreated: (controller) {
+                _webViewController = controller;
+              },
+              onPageFinished: (url) {
+                updatePageTitle();
+              },
+              navigationDelegate: (req) {
+                final url = req.url;
+                if (url.startsWith('http://') ||
+                    url.startsWith('https://') ||
+                    url.startsWith('//')) {
+                  return NavigationDecision.navigate;
+                } else {
+                  return canLaunch(req.url).then((res) {
+                    if (res) {
+                      launch(url);
+                    }
+                    return NavigationDecision.prevent;
+                  });
                 }
-                return NavigationDecision.prevent;
-              });
+              },
+              javascriptMode: JavascriptMode.unrestricted,
+              initialUrl: widget.url,
+            )),
+        onWillPop: () async {
+          if (_webViewController != null) {
+            final canGoBack = await _webViewController!.canGoBack();
+
+            if (canGoBack) {
+              _webViewController!.goBack();
+              return false;
             }
-          },
-          javascriptMode: JavascriptMode.unrestricted,
-          initialUrl: widget.url,
-        ));
+          }
+          return true;
+        });
   }
 }
