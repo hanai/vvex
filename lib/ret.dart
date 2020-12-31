@@ -49,8 +49,9 @@ class Member {
 class Topic {
   String content;
   Member member;
+  String title;
 
-  Topic(this.member, this.content);
+  Topic(this.member, this.content, this.title);
 
   factory Topic.fromJson(Map<String, dynamic> json) => _$TopicFromJson(json);
   Map<String, dynamic> toJson() => _$TopicToJson(this);

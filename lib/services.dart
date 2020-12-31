@@ -113,7 +113,7 @@ Future<List<Topic>> getTabTopics(String tab) async {
   return topics;
 }
 
-Future getTopicReplies(int topicId) async {
+Future<List<ret.Reply>> getTopicReplies(int topicId) async {
   final http = new Http();
   final res = await http.get<List<dynamic>>(
       'https://www.v2ex.com/api/replies/show.json?topic_id=' +
@@ -123,11 +123,10 @@ Future getTopicReplies(int topicId) async {
   return replies;
 }
 
-Future getTopicDetail(int id) async {
+Future<ret.Topic> getTopicDetail(int id) async {
   final http = new Http();
   final res = await http.get<List<dynamic>>(
       'https://www.v2ex.com/api/topics/show.json?id=' + id.toString());
   final ret.Topic topic = ret.Topic.fromJson(res.data[0]);
-
-  return {"content": topic.content};
+  return topic;
 }

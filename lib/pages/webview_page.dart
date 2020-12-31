@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -33,6 +34,22 @@ class _WebviewPageState extends State<WebviewPage> {
           title: Text(_title),
         ),
         body: WebView(
+          navigationDelegate: (req) {
+            final url = req.url;
+            if (url.startsWith('http://') ||
+                url.startsWith('https://') ||
+                url.startsWith('//')) {
+              return NavigationDecision.navigate;
+            } else {
+              return canLaunch(req.url).then((res) {
+                if (res) {
+                  launch(url);
+                }
+                return NavigationDecision.prevent;
+              });
+            }
+          },
+          javascriptMode: JavascriptMode.unrestricted,
           initialUrl: widget.url,
         ));
   }

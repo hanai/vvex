@@ -54,10 +54,12 @@ Topic _$TopicFromJson(Map<String, dynamic> json) {
   return Topic(
     Member.fromJson(json['member'] as Map<String, dynamic>),
     json['content'] as String,
+    json['title'] as String,
   );
 }
 
 Map<String, dynamic> _$TopicToJson(Topic instance) => <String, dynamic>{
       'content': instance.content,
       'member': instance.member,
+      'title': instance.title,
     };

@@ -1,18 +1,15 @@
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:vvex/pages/webview_page.dart';
 import 'package:vvex/services.dart';
+import 'package:vvex/widgets/markdown_content.dart';
+import 'package:vvex/widgets/reply_list_reply_item.dart';
 
 import '../ret.dart';
 
 class TopicDetailPage extends StatefulWidget {
-  TopicDetailPage({Key? key, required this.title, required this.topicId})
+  TopicDetailPage({Key? key, this.title, required this.topicId})
       : super(key: key);
 
-  final String title;
+  final String? title;
   final int topicId;
 
   @override
@@ -20,7 +17,7 @@ class TopicDetailPage extends StatefulWidget {
 }
 
 class _TopicDetailPageState extends State<TopicDetailPage> {
-  String _topicContent = '';
+  Topic? _topicDetail;
   List<Reply> _topicReplys = [];
 
   @override
@@ -41,7 +38,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
 
     if (this.mounted) {
       setState(() {
-        _topicContent = data['content'];
+        _topicDetail = data;
       });
     }
   }
@@ -51,62 +48,53 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     super.dispose();
   }
 
+  String _getTopicTitle() {
+    if (widget.title != null) {
+      return widget.title!;
+    } else if (_topicDetail != null) {
+      return _topicDetail!.title;
+    } else {
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(_getTopicTitle()),
       ),
       body: SingleChildScrollView(
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text(widget.title),
-              Container(
-                padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
-                child: MarkdownBody(
-                    data: _topicContent,
-                    onTapLink: (text, href, title) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => WebviewPage(
-                                url: href,
-                                title: title != null && title.length > 0
-                                    ? title
-                                    : text)),
-                      );
-                    }),
-              ),
+              _getTopicTitle().length > 0
+                  ? Container(
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: Text(
+                        _getTopicTitle(),
+                        style:
+                            TextStyle(color: Color(0xFF333333), fontSize: 26),
+                      ),
+                    )
+                  : Container(),
+              _topicDetail != null
+                  ? Container(
+                      padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                      child: MarkdownContent(
+                        content: _topicDetail!.content,
+                      ))
+                  : CircularProgressIndicator(),
               Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _topicReplys.map((reply) {
-                    return Row(children: [
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CachedNetworkImage(
-                                imageUrl: reply.member.avatarNormal,
-                                width: 40,
-                                height: 40,
-                                placeholder: (context, url) =>
-                                    CircularProgressIndicator(),
-                                fit: BoxFit.contain),
-                          ]),
-                      Flexible(
-                          flex: 1,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(reply.member.avatarNormal),
-                                Text(reply.content)
-                              ]))
-                    ]);
-                  }).toList())
+                  children: _topicReplys
+                      .map((reply) => ReplyItem(
+                            reply: reply,
+                            index: _topicReplys.indexOf(reply),
+                          ))
+                      .toList())
             ]),
       ),
     );
