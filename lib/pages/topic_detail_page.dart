@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/services.dart';
+import 'package:vvex/widgets/loading_container.dart';
 import 'package:vvex/widgets/markdown_content.dart';
 import 'package:vvex/widgets/reply_list_reply_item.dart';
 
@@ -18,7 +19,7 @@ class TopicDetailPage extends StatefulWidget {
 
 class _TopicDetailPageState extends State<TopicDetailPage> {
   Topic? _topicDetail;
-  List<Reply> _topicReplys = [];
+  List<Reply>? _topicReplys;
 
   @override
   void initState() {
@@ -81,20 +82,26 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                   : Container(),
               _topicDetail != null
                   ? Container(
-                      padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                       child: MarkdownContent(
                         content: _topicDetail!.content,
                       ))
-                  : CircularProgressIndicator(),
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _topicReplys
-                      .map((reply) => ReplyItem(
-                            reply: reply,
-                            index: _topicReplys.indexOf(reply),
-                          ))
-                      .toList())
+                  : LoadingContainer(),
+              Divider(),
+              _topicReplys != null
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: _topicReplys!
+                          .map((reply) => ReplyItem(
+                                reply: reply,
+                                index: _topicReplys!.indexOf(reply),
+                              ))
+                          .toList())
+                  : LoadingContainer(),
+              Container(
+                height: 120,
+              )
             ]),
       ),
     );
