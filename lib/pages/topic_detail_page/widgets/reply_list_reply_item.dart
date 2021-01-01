@@ -1,9 +1,10 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:vvex/utils/df.dart';
 import 'package:vvex/widgets/markdown_content.dart';
 
-import '../ret.dart';
+import '../../../ret.dart';
 
 class ReplyItem extends StatefulWidget {
   ReplyItem({Key? key, required this.reply, required this.index})
@@ -37,7 +38,12 @@ class _ReplyItemState extends State<ReplyItem> {
                 Container(
                   width: 10,
                 ),
-                Text(widget.reply.member.username)
+                Text(widget.reply.member.username),
+                Flexible(
+                    flex: 1,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [Text(df(widget.reply.created))]))
               ],
             ),
             Container(

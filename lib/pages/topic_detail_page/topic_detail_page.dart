@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vvex/pages/topic_detail_page/widgets/topic_reply_info.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/widgets/loading_container.dart';
 import 'package:vvex/widgets/markdown_content.dart';
-import 'package:vvex/widgets/reply_list_reply_item.dart';
+import 'package:vvex/pages/topic_detail_page/widgets/reply_list_reply_item.dart';
 
-import '../ret.dart';
+import '../../ret.dart';
+import 'widgets/topic_meta_info.dart';
 
 class TopicDetailPage extends StatefulWidget {
   TopicDetailPage({Key? key, this.title, required this.topicId})
@@ -26,12 +28,16 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     super.initState();
 
     this._getTopicDetail();
+    this._getTopicReplies();
+  }
 
-    getTopicReplies(widget.topicId).then((value) {
+  _getTopicReplies() async {
+    var replies = await getTopicReplies(widget.topicId);
+    if (this.mounted) {
       setState(() {
-        _topicReplys = value;
+        _topicReplys = replies;
       });
-    });
+    }
   }
 
   _getTopicDetail() async {
@@ -44,11 +50,6 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   String _getTopicTitle() {
     if (widget.title != null) {
       return widget.title!;
@@ -59,8 +60,36 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     }
   }
 
+  Map<String, dynamic>? _getReplyInfo() {
+    int replyCount1 = 0;
+    int replyCount2 = 0;
+    if (_topicDetail != null) {
+      replyCount1 = _topicDetail!.replies;
+    }
+    if (_topicReplys != null) {
+      replyCount2 = _topicReplys!.length;
+    }
+
+    if (replyCount2 > replyCount1) {
+      return {
+        "count": replyCount2,
+        "lastReplyBy": _topicReplys!.last.member.username,
+        "lastTouched": _topicReplys!.last.member.created,
+      };
+    } else if (_topicDetail != null) {
+      return {
+        "count": replyCount1,
+        "lastReplyBy": _topicDetail!.lastReplyBy,
+        "lastTouched": _topicDetail!.lastTouched,
+      };
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final replyInfo = _getReplyInfo();
     return Scaffold(
       appBar: AppBar(
         title: Text(_getTopicTitle()),
@@ -81,12 +110,26 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                     )
                   : Container(),
               _topicDetail != null
-                  ? Container(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      child: MarkdownContent(
-                        content: _topicDetail!.content,
-                      ))
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                          TopicMetaInfo(_topicDetail!),
+                          Container(
+                              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                              child: MarkdownContent(
+                                content: _topicDetail!.content,
+                              ))
+                        ])
                   : LoadingContainer(),
+              ...(replyInfo != null
+                  ? [
+                      Divider(),
+                      TopicReplyInfo(
+                          count: replyInfo['count'],
+                          username: replyInfo['lastReplyBy'],
+                          time: replyInfo['lastTouched'])
+                    ]
+                  : []),
               Divider(),
               _topicReplys != null
                   ? Column(

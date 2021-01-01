@@ -2,7 +2,7 @@
 import 'package:markdown/markdown.dart' as md;
 
 class AtSyntax extends md.InlineSyntax {
-  static final String _pattern = r'(^|\s+)@(\w+)(\s+|$)';
+  static final String _pattern = r'(^|\s)@(\w+)(\s|$)';
 
   AtSyntax() : super(_pattern);
 
