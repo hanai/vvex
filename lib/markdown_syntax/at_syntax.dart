@@ -9,6 +9,7 @@ class AtSyntax extends md.InlineSyntax {
   @override
   bool onMatch(md.InlineParser parser, Match match) {
     var anchor = md.Element.text('a', '@${match[2]}');
+    anchor.attributes['href'] = '@${match[2]}';
 
     parser.addNode(md.Text(match[1]));
     parser.addNode(anchor);

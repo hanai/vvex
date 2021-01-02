@@ -4,6 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:vvex/markdown_syntax/at_syntax.dart';
 import 'package:vvex/markdown_syntax/img_syntax.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
+import 'package:vvex/pages/user_info_page/user_info_page.dart';
 import 'package:vvex/pages/webview_page.dart';
 
 class MarkdownContent extends StatefulWidget {
@@ -29,25 +30,34 @@ class _MarkdownContentState extends State<MarkdownContent> {
         selectable: widget.selectable,
         inlineSyntaxes: [AtSyntax(), ImgSyntax()],
         onTapLink: (text, href, title) {
-          RegExp topicReg =
-              new RegExp(r"^(https?:)?\/\/(www\.)?v2ex\.com\/t\/(\d+)$");
-          var match = topicReg.firstMatch(href);
-          if (match != null && match.groupCount == 3) {
+          if (href.startsWith('@')) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => TopicDetailPage(
-                    topicId: int.parse(match.group(3)!),
+                  builder: (context) => UserInfoPage(
+                    username: href.substring(1),
                   ),
                 ));
           } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => WebviewPage(
-                      url: href,
-                      title: title != null && title.length > 0 ? title : text)),
-            );
+            RegExp topicReg =
+                new RegExp(r"^(https?:)?\/\/(www\.)?v2ex\.com\/t\/(\d+)$");
+            var match = topicReg.firstMatch(href);
+            if (match != null && match.groupCount == 3) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TopicDetailPage(
+                      topicId: int.parse(match.group(3)!),
+                    ),
+                  ));
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WebviewPage(
+                        url: href, title: title.length > 0 ? title : text)),
+              );
+            }
           }
         });
   }

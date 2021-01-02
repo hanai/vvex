@@ -55,7 +55,7 @@ class _ReplyItemState extends State<ReplyItem> {
                         ]))
               ],
             ),
-            Container(
+            SizedBox(
               height: 10,
             ),
             MarkdownContent(content: widget.reply.content)

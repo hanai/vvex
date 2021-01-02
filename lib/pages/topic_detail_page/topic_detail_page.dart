@@ -106,7 +106,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     final replyInfo = _getReplyInfo();
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getTopicTitle()),
+        title: Text('主题: ${_getTopicTitle()}'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -156,7 +156,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                               ))
                           .toList())
                   : LoadingContainer(),
-              Container(
+              SizedBox(
                 height: 120,
               )
             ]),

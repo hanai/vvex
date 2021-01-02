@@ -15,10 +15,16 @@ class TopicReplyInfo extends StatelessWidget {
         child: Row(
           children: [
             Text('$count 条回复'),
-            SizedBox(width: 10),
-            Text(
-              count > 0 ? '最新回复 $username@${df(time!)}' : '',
-            )
+            Flexible(
+                flex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      count > 0 ? '最新回复 $username@${df(time!)}' : '',
+                    )
+                  ],
+                ))
           ],
         ));
   }
