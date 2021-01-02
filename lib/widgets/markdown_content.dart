@@ -39,8 +39,9 @@ class _MarkdownContentState extends State<MarkdownContent> {
                   flex: 1,
                   child: CachedNetworkImage(
                       imageUrl: uri.toString(),
-                      placeholder: (context, url) =>
-                          CircularProgressIndicator(),
+                      placeholder: (context, url) => Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: CircularProgressIndicator()),
                       fit: BoxFit.contain))
             ],
           );
