@@ -32,10 +32,18 @@ class _MarkdownContentState extends State<MarkdownContent> {
         selectable: widget.selectable,
         inlineSyntaxes: [AtSyntax(), ImgSyntax()],
         imageBuilder: (Uri uri, String title, String alt) {
-          return CachedNetworkImage(
-              imageUrl: uri.toString(),
-              placeholder: (context, url) => CircularProgressIndicator(),
-              fit: BoxFit.contain);
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                  flex: 1,
+                  child: CachedNetworkImage(
+                      imageUrl: uri.toString(),
+                      placeholder: (context, url) =>
+                          CircularProgressIndicator(),
+                      fit: BoxFit.contain))
+            ],
+          );
         },
         onTapLink: (text, href, title) {
           if (href.startsWith('@')) {

@@ -56,7 +56,6 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
 
   void _detectReplyNeedRefresh() {
     if (_topicDetail != null && _topicReplys != null) {
-      print('${_topicDetail!.replies} ${_topicReplys!.length}');
       if (_topicDetail!.replies > _topicReplys!.length) {
         _getTopicReplies(refresh: true);
       }
@@ -112,7 +111,8 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
             icon: Icon(Icons.more_horiz_outlined),
             itemBuilder: (BuildContext context) {
               return [
-                {"label": '收藏', "value": 'archive'}
+                {"label": '收藏', "value": 'archive'},
+                {"label": '分享', "value": 'share'},
               ].map((item) {
                 return PopupMenuItem<String>(
                   value: item['value'],
