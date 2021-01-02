@@ -3,7 +3,7 @@ import 'package:markdown/markdown.dart' as md;
 
 class ImgSyntax extends md.InlineSyntax {
   static final String _pattern =
-      r'(^|\s)((https?:)?\/\/[^\s]*\.(png|jpg))(\s|$)';
+      r'(^|\s)((https?:)?\/\/[^\s]*\.(png|jpg|gif))(\s|$)';
 
   ImgSyntax() : super(_pattern);
 
