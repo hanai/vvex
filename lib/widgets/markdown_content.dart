@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_markdown/flutter_markdown.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:vvex/markdown_syntax/at_syntax.dart';
 import 'package:vvex/markdown_syntax/img_syntax.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
@@ -29,6 +31,12 @@ class _MarkdownContentState extends State<MarkdownContent> {
         data: widget.content,
         selectable: widget.selectable,
         inlineSyntaxes: [AtSyntax(), ImgSyntax()],
+        imageBuilder: (Uri uri, String title, String alt) {
+          return CachedNetworkImage(
+              imageUrl: uri.toString(),
+              placeholder: (context, url) => CircularProgressIndicator(),
+              fit: BoxFit.contain);
+        },
         onTapLink: (text, href, title) {
           if (href.startsWith('@')) {
             Navigator.push(
