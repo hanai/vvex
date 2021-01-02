@@ -113,20 +113,37 @@ Future<List<Topic>> getTabTopics(String tab) async {
   return topics;
 }
 
-Future<List<ret.Reply>> getTopicReplies(int topicId) async {
+Future<List<ret.Reply>> getTopicReplies(int topicId,
+    {bool refresh = false}) async {
   final http = new Http();
+  var params = {
+    "topic_id": topicId,
+  };
+
+  if (refresh) {
+    params['now'] = DateTime.now().millisecondsSinceEpoch;
+  }
   final res = await http.get<List<dynamic>>(
-      'https://www.v2ex.com/api/replies/show.json?topic_id=' +
-          topicId.toString());
+      'https://www.v2ex.com/api/replies/show.json',
+      queryParameters: params);
   final List<ret.Reply> replies =
       res.data.map((e) => ret.Reply.fromJson(e)).toList();
   return replies;
 }
 
-Future<ret.Topic> getTopicDetail(int id) async {
+Future<ret.Topic> getTopicDetail(int id, {bool refresh = false}) async {
   final http = new Http();
+  var params = {
+    "id": id,
+  };
+
+  if (refresh) {
+    params['now'] = DateTime.now().millisecondsSinceEpoch;
+  }
+
   final res = await http.get<List<dynamic>>(
-      'https://www.v2ex.com/api/topics/show.json?id=' + id.toString());
+      'https://www.v2ex.com/api/topics/show.json',
+      queryParameters: params);
   final ret.Topic topic = ret.Topic.fromJson(res.data[0]);
   return topic;
 }

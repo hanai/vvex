@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:vvex/markdown_syntax/at_syntax.dart';
+import 'package:vvex/markdown_syntax/img_syntax.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/pages/webview_page.dart';
 
@@ -26,7 +27,7 @@ class _MarkdownContentState extends State<MarkdownContent> {
     return MarkdownBody(
         data: widget.content,
         selectable: widget.selectable,
-        inlineSyntaxes: [AtSyntax()],
+        inlineSyntaxes: [AtSyntax(), ImgSyntax()],
         onTapLink: (text, href, title) {
           RegExp topicReg =
               new RegExp(r"^(https?:)?\/\/(www\.)?v2ex\.com\/t\/(\d+)$");

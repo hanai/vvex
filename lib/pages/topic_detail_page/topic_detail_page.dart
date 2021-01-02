@@ -31,12 +31,15 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     this._getTopicReplies();
   }
 
-  _getTopicReplies() async {
-    var replies = await getTopicReplies(widget.topicId);
+  _getTopicReplies({bool refresh = false}) async {
+    var replies = await getTopicReplies(widget.topicId, refresh: refresh);
     if (this.mounted) {
       setState(() {
         _topicReplys = replies;
       });
+      if (!refresh) {
+        _detectReplyNeedRefresh();
+      }
     }
   }
 
@@ -47,6 +50,16 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
       setState(() {
         _topicDetail = data;
       });
+      _detectReplyNeedRefresh();
+    }
+  }
+
+  void _detectReplyNeedRefresh() {
+    if (_topicDetail != null && _topicReplys != null) {
+      print('${_topicDetail!.replies} ${_topicReplys!.length}');
+      if (_topicDetail!.replies > _topicReplys!.length) {
+        _getTopicReplies(refresh: true);
+      }
     }
   }
 
@@ -66,6 +79,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     if (_topicDetail != null) {
       replyCount1 = _topicDetail!.replies;
     }
+
     if (_topicReplys != null) {
       replyCount2 = _topicReplys!.length;
     }

@@ -15,7 +15,7 @@ class TopicReplyInfo extends StatelessWidget {
         child: Row(
           children: [
             Text('$count 条回复'),
-            Container(width: 10),
+            SizedBox(width: 10),
             Text(
               count > 0 ? '最新回复 $username@${df(time!)}' : '',
             )

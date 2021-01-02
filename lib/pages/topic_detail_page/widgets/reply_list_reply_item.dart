@@ -35,7 +35,7 @@ class _ReplyItemState extends State<ReplyItem> {
                     height: 30,
                     placeholder: (context, url) => CircularProgressIndicator(),
                     fit: BoxFit.contain),
-                Container(
+                SizedBox(
                   width: 10,
                 ),
                 Text(widget.reply.member.username),
@@ -43,7 +43,16 @@ class _ReplyItemState extends State<ReplyItem> {
                     flex: 1,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: [Text(df(widget.reply.created))]))
+                        children: [
+                          Text(df(widget.reply.created)),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            '#${widget.index + 1}',
+                            style: TextStyle(color: Color(0xff999999)),
+                          ),
+                        ]))
               ],
             ),
             Container(

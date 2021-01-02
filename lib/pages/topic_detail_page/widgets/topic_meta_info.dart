@@ -21,7 +21,7 @@ class TopicMetaInfo extends StatelessWidget {
               height: 30,
               placeholder: (context, url) => CircularProgressIndicator(),
               fit: BoxFit.contain),
-          Container(
+          SizedBox(
             width: 10,
           ),
           Text(topic.member.username),
