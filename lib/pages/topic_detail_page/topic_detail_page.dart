@@ -107,6 +107,21 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('主题: ${_getTopicTitle()}'),
+        actions: [
+          PopupMenuButton(
+            icon: Icon(Icons.more_horiz_outlined),
+            itemBuilder: (BuildContext context) {
+              return [
+                {"label": '收藏', "value": 'archive'}
+              ].map((item) {
+                return PopupMenuItem<String>(
+                  value: item['value'],
+                  child: Text(item['label']!),
+                );
+              }).toList();
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

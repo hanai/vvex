@@ -43,6 +43,21 @@ class _WebviewPageState extends State<WebviewPage> {
         child: Scaffold(
             appBar: AppBar(
               title: Text(_title),
+              actions: [
+                PopupMenuButton(
+                  icon: Icon(Icons.more_horiz_outlined),
+                  itemBuilder: (BuildContext context) {
+                    return [
+                      {"label": '分享', "value": 'share'}
+                    ].map((item) {
+                      return PopupMenuItem<String>(
+                        value: item['value'],
+                        child: Text(item['label']!),
+                      );
+                    }).toList();
+                  },
+                )
+              ],
             ),
             body: WebView(
               onWebViewCreated: (controller) {
