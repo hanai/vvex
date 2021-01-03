@@ -7,11 +7,11 @@ class WebviewPage extends StatefulWidget {
   WebviewPage({
     Key? key,
     required this.url,
-    required this.title,
+    this.title,
   }) : super(key: key);
 
   final String url;
-  final String title;
+  final String? title;
 
   @override
   _WebviewPageState createState() => _WebviewPageState();
@@ -25,14 +25,17 @@ class _WebviewPageState extends State<WebviewPage> {
   void initState() {
     super.initState();
 
-    this._title = widget.title;
+    this._title = widget.title ?? '';
   }
 
   void updatePageTitle() async {
-    final res =
+    String title =
         await _webViewController?.evaluateJavascript("document.title") ?? '';
+    title = title.replaceAllMapped(new RegExp(r'^"(.+)"$'), (match) {
+      return '${match.group(1)}';
+    });
     setState(() {
-      _title = res;
+      _title = title;
     });
   }
 

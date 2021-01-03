@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vvex/ret.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:vvex/utils/df.dart';
+import 'package:vvex/types.dart';
+import 'package:vvex/utils/dt.dart';
 
 class TopicMetaInfo extends StatelessWidget {
-  final Topic topic;
+  final TopicData topic;
 
   TopicMetaInfo(this.topic) : super();
 
@@ -16,7 +16,7 @@ class TopicMetaInfo extends StatelessWidget {
       child: Row(
         children: [
           CachedNetworkImage(
-              imageUrl: topic.member.avatarNormal,
+              imageUrl: topic.member.avatar,
               width: 30,
               height: 30,
               placeholder: (context, url) => CircularProgressIndicator(),
@@ -29,7 +29,7 @@ class TopicMetaInfo extends StatelessWidget {
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [Text(df(topic.created))],
+                children: [Text(df(topic.createdAt))],
               ))
         ],
       ),

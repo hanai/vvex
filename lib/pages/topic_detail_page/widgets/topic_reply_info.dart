@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vvex/utils/df.dart';
+import 'package:vvex/utils/dt.dart';
 
 class TopicReplyInfo extends StatelessWidget {
   final int count;
-  final String? username;
   final int? time;
 
-  TopicReplyInfo({required this.count, this.username, this.time}) : super();
+  TopicReplyInfo({required this.count, this.time}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class TopicReplyInfo extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      count > 0 ? '最新回复 $username@${df(time!)}' : '',
+                      count > 0 ? '最新回复 ${df(time!)}' : '',
                     )
                   ],
                 ))

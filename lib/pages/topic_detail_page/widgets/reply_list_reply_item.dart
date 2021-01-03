@@ -1,16 +1,15 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:vvex/utils/df.dart';
-import 'package:vvex/widgets/markdown_content.dart';
-
-import '../../../ret.dart';
+import 'package:vvex/types.dart';
+import 'package:vvex/utils/dt.dart' as dt;
+import 'package:vvex/widgets/html_content.dart';
 
 class ReplyItem extends StatefulWidget {
   ReplyItem({Key? key, required this.reply, required this.index})
       : super(key: key);
 
-  final Reply reply;
+  final ReplyData reply;
   final int index;
 
   @override
@@ -30,7 +29,7 @@ class _ReplyItemState extends State<ReplyItem> {
             Row(
               children: [
                 CachedNetworkImage(
-                    imageUrl: widget.reply.member.avatarNormal,
+                    imageUrl: widget.reply.member.avatar,
                     width: 30,
                     height: 30,
                     placeholder: (context, url) => CircularProgressIndicator(),
@@ -44,7 +43,7 @@ class _ReplyItemState extends State<ReplyItem> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(df(widget.reply.created)),
+                          Text(dt.df(widget.reply.createdAt)),
                           SizedBox(
                             width: 10,
                           ),
@@ -58,7 +57,7 @@ class _ReplyItemState extends State<ReplyItem> {
             SizedBox(
               height: 10,
             ),
-            MarkdownContent(content: widget.reply.content)
+            HTMLContent(content: widget.reply.content)
           ],
         ),
       )

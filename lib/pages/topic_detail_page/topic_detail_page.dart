@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:vvex/pages/topic_detail_page/widgets/topic_reply_info.dart';
 import 'package:vvex/services.dart';
+import 'package:vvex/types.dart';
+import 'package:vvex/widgets/html_content.dart';
 import 'package:vvex/widgets/loading_container.dart';
-import 'package:vvex/widgets/markdown_content.dart';
-import 'package:vvex/pages/topic_detail_page/widgets/reply_list_reply_item.dart';
 
-import '../../ret.dart';
+import 'widgets/reply_list_reply_item.dart';
 import 'widgets/topic_meta_info.dart';
+import 'widgets/topic_reply_info.dart';
+import 'widgets/topic_subtle.dart';
 
 class TopicDetailPage extends StatefulWidget {
   TopicDetailPage({Key? key, this.title, required this.topicId})
@@ -20,80 +21,46 @@ class TopicDetailPage extends StatefulWidget {
 }
 
 class _TopicDetailPageState extends State<TopicDetailPage> {
-  Topic? _topicDetail;
-  List<Reply>? _topicReplys;
+  TopicData? _topicData;
+  List<ReplyData>? _replies;
 
   @override
   void initState() {
     super.initState();
 
-    this._getTopicDetail();
-    this._getTopicReplies();
+    this._getTopicAndReplies();
   }
 
-  _getTopicReplies({bool refresh = false}) async {
-    var replies = await getTopicReplies(widget.topicId, refresh: refresh);
-    if (this.mounted) {
-      setState(() {
-        _topicReplys = replies;
-      });
-      if (!refresh) {
-        _detectReplyNeedRefresh();
+  _getTopicAndReplies() {
+    getTopicAndReplies(widget.topicId).then((res) {
+      if (this.mounted) {
+        setState(() {
+          _topicData = res['topic'];
+          _replies = res['replies'];
+        });
       }
-    }
-  }
-
-  _getTopicDetail() async {
-    var data = await getTopicDetail(widget.topicId);
-
-    if (this.mounted) {
-      setState(() {
-        _topicDetail = data;
-      });
-      _detectReplyNeedRefresh();
-    }
-  }
-
-  void _detectReplyNeedRefresh() {
-    if (_topicDetail != null && _topicReplys != null) {
-      if (_topicDetail!.replies > _topicReplys!.length) {
-        _getTopicReplies(refresh: true);
-      }
-    }
+    });
   }
 
   String _getTopicTitle() {
     if (widget.title != null) {
       return widget.title!;
-    } else if (_topicDetail != null) {
-      return _topicDetail!.title;
+    } else if (_topicData != null) {
+      return _topicData!.title;
     } else {
       return '';
     }
   }
 
   Map<String, dynamic>? _getReplyInfo() {
-    int replyCount1 = 0;
-    int replyCount2 = 0;
-    if (_topicDetail != null) {
-      replyCount1 = _topicDetail!.replies;
+    if (_topicData == null) {
+      return null;
     }
 
-    if (_topicReplys != null) {
-      replyCount2 = _topicReplys!.length;
-    }
-
-    if (replyCount2 > replyCount1) {
+    if (_topicData != null) {
       return {
-        "count": replyCount2,
-        "lastReplyBy": _topicReplys!.last.member.username,
-        "lastTouched": _topicReplys!.last.member.created,
-      };
-    } else if (_topicDetail != null) {
-      return {
-        "count": replyCount1,
-        "lastReplyBy": _topicDetail!.lastReplyBy,
-        "lastTouched": _topicDetail!.lastTouched,
+        "count": _topicData!.replyCount,
+        "lastReplyAt": _topicData!.lastReplyAt,
       };
     } else {
       return null;
@@ -138,16 +105,28 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                       ),
                     )
                   : Container(),
-              _topicDetail != null
+              _topicData != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                          TopicMetaInfo(_topicDetail!),
+                          TopicMetaInfo(_topicData!),
                           Container(
                               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                              child: MarkdownContent(
-                                content: _topicDetail!.content,
-                              ))
+                              child: HTMLContent(
+                                content: _topicData!.content,
+                              )),
+                          ...(_topicData!.subtles.length > 0
+                              ? [
+                                  Divider(),
+                                  ..._topicData!.subtles
+                                      .asMap()
+                                      .entries
+                                      .map((entry) {
+                                    return TopicSubtle(
+                                        subtle: entry.value, index: entry.key);
+                                  }).toList()
+                                ]
+                              : [])
                         ])
                   : LoadingContainer(),
               ...(replyInfo != null
@@ -155,19 +134,20 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                       Divider(),
                       TopicReplyInfo(
                           count: replyInfo['count'],
-                          username: replyInfo['lastReplyBy'],
-                          time: replyInfo['lastTouched'])
+                          time: replyInfo['lastReplyAt'])
                     ]
                   : []),
               Divider(),
-              _topicReplys != null
+              _replies != null
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: _topicReplys!
-                          .map((reply) => ReplyItem(
-                                reply: reply,
-                                index: _topicReplys!.indexOf(reply),
+                      children: _replies!
+                          .asMap()
+                          .entries
+                          .map((entry) => ReplyItem(
+                                reply: entry.value,
+                                index: entry.key,
                               ))
                           .toList())
                   : LoadingContainer(),

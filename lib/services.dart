@@ -5,8 +5,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
-import 'package:vvex/ret.dart' as ret;
 import 'package:vvex/types.dart';
+import 'package:vvex/utils/dt.dart' as dt;
 import 'package:vvex/utils/http.dart';
 
 Future<bool> signin(Map<String, dynamic> args) {
@@ -113,37 +113,108 @@ Future<List<Topic>> getTabTopics(String tab) async {
   return topics;
 }
 
-Future<List<ret.Reply>> getTopicReplies(int topicId,
-    {bool refresh = false}) async {
+// Future<List<ret.Reply>> getTopicReplies(int topicId,
+//     {bool refresh = false}) async {
+//   final http = new Http();
+//   var params = {
+//     "topic_id": topicId,
+//   };
+
+//   if (refresh) {
+//     params['now'] = DateTime.now().millisecondsSinceEpoch;
+//   }
+//   final res = await http.get<List<dynamic>>(
+//       'https://www.v2ex.com/api/replies/show.json',
+//       queryParameters: params);
+//   final List<ret.Reply> replies =
+//       res.data.map((e) => ret.Reply.fromJson(e)).toList();
+//   return replies;
+// }
+
+// Future<ret.Topic> getTopicDetail(int id, {bool refresh = false}) async {
+//   final http = new Http();
+//   var params = {
+//     "id": id,
+//   };
+
+//   if (refresh) {
+//     params['now'] = DateTime.now().millisecondsSinceEpoch;
+//   }
+
+//   final res = await http.get<List<dynamic>>(
+//       'https://www.v2ex.com/api/topics/show.json',
+//       queryParameters: params);
+//   final ret.Topic topic = ret.Topic.fromJson(res.data[0]);
+//   return topic;
+// }
+
+Future getTopicAndReplies(int id) async {
   final http = new Http();
-  var params = {
-    "topic_id": topicId,
+  final String res = await http.getHTML('https://www.v2ex.com/t/$id',
+      options: Options(headers: {
+        HttpHeaders.userAgentHeader:
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+      }));
+  var doc = parse(res);
+  var $main = doc.getElementById('Main');
+  var $box = $main.querySelectorAll('.box');
+  var $topicSection = $box[0];
+  var $replySection = $box[1];
+
+  var topicTitle = $topicSection.querySelector('.header h1').text;
+  var topicMemberUsername = $topicSection.querySelector('.header .gray a').text;
+  var topicMemberAvatar =
+      $topicSection.querySelector('.header .avatar').attributes['src'] ?? '';
+  var topicContent =
+      $topicSection.querySelector('.cell .topic_content').innerHtml;
+  int topicCreated = dt.dp(
+      $topicSection.querySelector('.header .gray span').attributes['title'] ??
+          '');
+
+  var $replySectionCells = $replySection.querySelectorAll('.cell');
+
+  var replyCount = int.parse((new RegExp(r'^(\d+)\s'))
+          .firstMatch(
+              $replySectionCells[0].querySelector('.gray')?.text ?? '0 ')!
+          .group(1) ??
+      '0');
+  int? topicLastReplyAt;
+  if (replyCount > 0) {
+    topicLastReplyAt = dt.dp((new RegExp(r'\d{4}-.+$'))
+        .firstMatch($replySectionCells[0].querySelector('.gray')!.text)!
+        .group(0)!);
+  }
+
+  var subtles = $topicSection.querySelectorAll('.subtle').map((e) {
+    return SubtleData(
+        createdAt:
+            dt.dp(e.querySelector('.fade span').attributes['title'] ?? ''),
+        content: e.querySelector('.topic_content').innerHtml);
+  }).toList();
+
+  var replies = $replySectionCells.sublist(1).map((e) {
+    return ReplyData(
+        content: e.querySelector('.reply_content').innerHtml,
+        createdAt: dt.dp(e.querySelector('.ago').attributes['title']!),
+        member: MemberData(
+          avatar: e.querySelector('.avatar').attributes['src']!,
+          username: e.querySelector('strong a').text,
+        ));
+  }).toList();
+
+  final result = {
+    "topic": TopicData(
+        id: id,
+        title: topicTitle,
+        content: topicContent,
+        createdAt: topicCreated,
+        subtles: subtles,
+        replyCount: replyCount,
+        lastReplyAt: topicLastReplyAt,
+        member: MemberData(
+            avatar: topicMemberAvatar, username: topicMemberUsername)),
+    "replies": replies,
   };
 
-  if (refresh) {
-    params['now'] = DateTime.now().millisecondsSinceEpoch;
-  }
-  final res = await http.get<List<dynamic>>(
-      'https://www.v2ex.com/api/replies/show.json',
-      queryParameters: params);
-  final List<ret.Reply> replies =
-      res.data.map((e) => ret.Reply.fromJson(e)).toList();
-  return replies;
-}
-
-Future<ret.Topic> getTopicDetail(int id, {bool refresh = false}) async {
-  final http = new Http();
-  var params = {
-    "id": id,
-  };
-
-  if (refresh) {
-    params['now'] = DateTime.now().millisecondsSinceEpoch;
-  }
-
-  final res = await http.get<List<dynamic>>(
-      'https://www.v2ex.com/api/topics/show.json',
-      queryParameters: params);
-  final ret.Topic topic = ret.Topic.fromJson(res.data[0]);
-  return topic;
+  return result;
 }
