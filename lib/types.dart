@@ -1,7 +1,6 @@
 class Topic {
   int id;
   String title;
-  String? link;
   int replies;
   String author;
   String avatar;
@@ -10,7 +9,6 @@ class Topic {
   Topic(
       {required this.id,
       required this.title,
-      this.link,
       required this.replies,
       required this.author,
       required this.avatar,
@@ -20,22 +18,24 @@ class Topic {
 class TopicData {
   int id;
   String title;
-  String content;
+  String? content;
   int createdAt;
   MemberData member;
   int replyCount;
   int? lastReplyAt;
   List<SubtleData> subtles;
+  int replyPageCount;
 
   TopicData(
       {required this.id,
       required this.title,
-      required this.content,
+      this.content,
       required this.createdAt,
       required this.member,
       required this.replyCount,
       this.lastReplyAt,
-      required this.subtles});
+      required this.subtles,
+      this.replyPageCount = 0});
 }
 
 class SubtleData {
@@ -55,10 +55,12 @@ class ReplyData {
   int createdAt;
   MemberData member;
   String content;
+  int floor;
 
   ReplyData({
     required this.content,
     required this.createdAt,
     required this.member,
+    required this.floor,
   });
 }

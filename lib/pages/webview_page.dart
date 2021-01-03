@@ -25,13 +25,13 @@ class _WebviewPageState extends State<WebviewPage> {
   void initState() {
     super.initState();
 
-    this._title = widget.title ?? '';
+    this._title = widget.title ?? widget.url;
   }
 
   void updatePageTitle() async {
     String title =
         await _webViewController?.evaluateJavascript("document.title") ?? '';
-    title = title.replaceAllMapped(new RegExp(r'^"(.+)"$'), (match) {
+    title = title.replaceAllMapped(new RegExp(r'^"(.*)"$'), (match) {
       return '${match.group(1)}';
     });
     setState(() {

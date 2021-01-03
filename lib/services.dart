@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:html/parser.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart' as dt;
+import 'package:vvex/utils/html.dart';
 import 'package:vvex/utils/http.dart';
 
 Future<bool> signin(Map<String, dynamic> args) {
@@ -75,7 +76,6 @@ Future<List<Topic>> getNodeTopics(String node) async {
     return Topic(
         id: topicId,
         title: $topicLink.text,
-        link: $topicLink.attributes['href'],
         replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
         author: $cell.querySelector('strong')?.text ?? '',
         avatar: $cell.querySelector('.avatar').attributes['src']!);
@@ -104,7 +104,6 @@ Future<List<Topic>> getTabTopics(String tab) async {
     return Topic(
         id: topicId,
         title: $topicLink.text,
-        link: $topicLink.attributes['href'],
         replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
         author: $cell.querySelector('strong')?.text ?? '',
         avatar: $cell.querySelector('.avatar').attributes['src']!);
@@ -148,42 +147,31 @@ Future<List<Topic>> getTabTopics(String tab) async {
 //   return topic;
 // }
 
-Future getTopicAndReplies(int id) async {
+Future getTopicAndReplies(int id, {int page = 1}) async {
   final http = new Http();
-  final String res = await http.getHTML('https://www.v2ex.com/t/$id',
+  final String res = await http.getHTML('https://www.v2ex.com/t/$id?p=$page',
       options: Options(headers: {
         HttpHeaders.userAgentHeader:
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
       }));
   var doc = parse(res);
+  print(testIfLoged(doc));
   var $main = doc.getElementById('Main');
-  var $box = $main.querySelectorAll('.box');
-  var $topicSection = $box[0];
-  var $replySection = $box[1];
+  var $boxs = $main.querySelectorAll('.box');
+
+  var $topicSection = $boxs[0];
+  var $replySection = $boxs[1];
 
   var topicTitle = $topicSection.querySelector('.header h1').text;
   var topicMemberUsername = $topicSection.querySelector('.header .gray a').text;
   var topicMemberAvatar =
       $topicSection.querySelector('.header .avatar').attributes['src'] ?? '';
-  var topicContent =
-      $topicSection.querySelector('.cell .topic_content').innerHtml;
+  var topicContent = $topicSection
+      .querySelector('.cell .topic_content')
+      ?.innerHtml; // 部分 topic 仅有 title
   int topicCreated = dt.dp(
       $topicSection.querySelector('.header .gray span').attributes['title'] ??
           '');
-
-  var $replySectionCells = $replySection.querySelectorAll('.cell');
-
-  var replyCount = int.parse((new RegExp(r'^(\d+)\s'))
-          .firstMatch(
-              $replySectionCells[0].querySelector('.gray')?.text ?? '0 ')!
-          .group(1) ??
-      '0');
-  int? topicLastReplyAt;
-  if (replyCount > 0) {
-    topicLastReplyAt = dt.dp((new RegExp(r'\d{4}-.+$'))
-        .firstMatch($replySectionCells[0].querySelector('.gray')!.text)!
-        .group(0)!);
-  }
 
   var subtles = $topicSection.querySelectorAll('.subtle').map((e) {
     return SubtleData(
@@ -192,15 +180,40 @@ Future getTopicAndReplies(int id) async {
         content: e.querySelector('.topic_content').innerHtml);
   }).toList();
 
-  var replies = $replySectionCells.sublist(1).map((e) {
-    return ReplyData(
-        content: e.querySelector('.reply_content').innerHtml,
-        createdAt: dt.dp(e.querySelector('.ago').attributes['title']!),
-        member: MemberData(
-          avatar: e.querySelector('.avatar').attributes['src']!,
-          username: e.querySelector('strong a').text,
-        ));
-  }).toList();
+  int replyCount = 0;
+  int? topicLastReplyAt;
+  int replyPageCount = 0;
+  List<ReplyData> replies = [];
+  if (doc.getElementById('no-comments-yet') == null) {
+    var $replySectionCells = $replySection.querySelectorAll('.cell');
+
+    replyCount = int.parse((new RegExp(r'^(\d+)\s'))
+            .firstMatch(
+                $replySectionCells[0].querySelector('.gray')?.text ?? '0 ')!
+            .group(1) ??
+        '0');
+
+    if (replyCount > 0) {
+      topicLastReplyAt = dt.dp((new RegExp(r'\d{4}-.+$'))
+          .firstMatch($replySectionCells[0].querySelector('.gray')!.text)!
+          .group(0)!);
+      replyPageCount = int.parse(
+          $replySection.querySelector('.page_input')?.attributes['max'] ?? '1');
+    }
+
+    replies = $replySectionCells.where((element) {
+      return element.querySelector('.no') != null;
+    }).map((e) {
+      return ReplyData(
+          content: e.querySelector('.reply_content').innerHtml,
+          createdAt: dt.dp(e.querySelector('.ago').attributes['title']!),
+          floor: int.parse(e.querySelector('.no').text),
+          member: MemberData(
+            avatar: e.querySelector('.avatar').attributes['src']!,
+            username: e.querySelector('strong a').text,
+          ));
+    }).toList();
+  }
 
   final result = {
     "topic": TopicData(
@@ -211,6 +224,7 @@ Future getTopicAndReplies(int id) async {
         subtles: subtles,
         replyCount: replyCount,
         lastReplyAt: topicLastReplyAt,
+        replyPageCount: replyPageCount,
         member: MemberData(
             avatar: topicMemberAvatar, username: topicMemberUsername)),
     "replies": replies,

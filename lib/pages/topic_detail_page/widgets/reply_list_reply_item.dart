@@ -48,7 +48,7 @@ class _ReplyItemState extends State<ReplyItem> {
                             width: 10,
                           ),
                           Text(
-                            '#${widget.index + 1}',
+                            '#${widget.reply.floor}',
                             style: TextStyle(color: Color(0xff999999)),
                           ),
                         ]))
