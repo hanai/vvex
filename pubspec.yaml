@@ -24,17 +24,15 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite:
-  path:
-  url_launcher:
-  webview_flutter:
+  path: 1.8.0-nullsafety.3
+  url_launcher: 6.0.0-nullsafety.1
+  webview_flutter: 1.0.7
   http: ^0.12.2
   html: ^0.14.0+4
   cookie_jar: ^1.0.0
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
-  flutter_svg: ^0.19.2+1
   path_provider: ^1.6.24
-  flutter_html: ^1.1.1
   cached_network_image: ^2.5.0
   shared_preferences: 0.5.12+4
   json_annotation: 4.0.0-nullsafety.0

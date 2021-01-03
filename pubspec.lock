@@ -127,20 +127,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "1.0.4"
-  chewie:
-    dependency: transitive
-    description:
-      name: chewie
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.12.0"
-  chewie_audio:
-    dependency: transitive
-    description:
-      name: chewie_audio
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "1.1.1"
   cli_util:
     dependency: transitive
     description:
@@ -190,13 +176,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "2.1.5"
-  css_colors:
-    dependency: transitive
-    description:
-      name: css_colors
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "1.1.0"
   csslib:
     dependency: transitive
     description:
@@ -279,13 +258,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "2.1.0"
-  flutter_html:
-    dependency: "direct main"
-    description:
-      name: flutter_html
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "1.1.1"
   flutter_markdown:
     dependency: "direct main"
     description:
@@ -293,13 +265,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "0.5.1"
-  flutter_svg:
-    dependency: "direct main"
-    description:
-      name: flutter_svg
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.19.2+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -359,13 +324,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "2.1.19"
-  import_js_library:
-    dependency: transitive
-    description:
-      name: import_js_library
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "1.0.2"
   intl:
     dependency: transitive
     description:
@@ -471,20 +429,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "1.8.0-nullsafety.3"
-  path_drawing:
-    dependency: transitive
-    description:
-      name: path_drawing
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.4.1+1"
-  path_parsing:
-    dependency: transitive
-    description:
-      name: path_parsing
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.1.4"
   path_provider:
     dependency: "direct main"
     description:
@@ -547,7 +491,7 @@ packages:
       name: plugin_platform_interface
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.0-nullsafety.1"
   pool:
     dependency: transitive
     description:
@@ -748,42 +692,35 @@ packages:
       name: url_launcher
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "5.7.10"
+    version: "6.0.0-nullsafety.1"
   url_launcher_linux:
     dependency: transitive
     description:
       name: url_launcher_linux
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "0.0.1+4"
+    version: "0.1.0-nullsafety.1"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "0.0.1+9"
+    version: "0.1.0-nullsafety.1"
   url_launcher_platform_interface:
     dependency: transitive
     description:
       name: url_launcher_platform_interface
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "1.0.9"
-  url_launcher_web:
-    dependency: transitive
-    description:
-      name: url_launcher_web
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.1.5+1"
+    version: "2.0.0-nullsafety.1"
   url_launcher_windows:
     dependency: transitive
     description:
       name: url_launcher_windows
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "0.0.1+3"
+    version: "0.1.0-nullsafety.1"
   uuid:
     dependency: transitive
     description:
@@ -798,48 +735,6 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "2.1.0-nullsafety.5"
-  video_player:
-    dependency: transitive
-    description:
-      name: video_player
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "1.0.1"
-  video_player_platform_interface:
-    dependency: transitive
-    description:
-      name: video_player_platform_interface
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "2.2.0"
-  video_player_web:
-    dependency: transitive
-    description:
-      name: video_player_web
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.1.4+1"
-  wakelock:
-    dependency: transitive
-    description:
-      name: wakelock
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.2.1+1"
-  wakelock_platform_interface:
-    dependency: transitive
-    description:
-      name: wakelock_platform_interface
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.1.0+1"
-  wakelock_web:
-    dependency: transitive
-    description:
-      name: wakelock_web
-      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
-    source: hosted
-    version: "0.1.0+3"
   watcher:
     dependency: transitive
     description:
@@ -890,5 +785,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=2.12.0-29.10.beta <3.0.0"
-  flutter: ">=1.24.0-6.0.pre <2.0.0"
+  dart: ">=2.12.0-0.0 <3.0.0"
+  flutter: ">=1.22.2 <2.0.0"
