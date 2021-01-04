@@ -187,10 +187,15 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
   int replyCount = 0;
   int? topicLastReplyAt;
   int replyPageCount = 0;
+  List<String> topicTags = [];
   List<ReplyData> replies = [];
   if (doc.getElementById('no-comments-yet') == null) {
     var $replySectionCells = $replySection.querySelectorAll('.cell');
 
+    topicTags = $replySectionCells[0]
+        .querySelectorAll('a.tag')
+        .map((e) => e.text.trim())
+        .toList();
     replyCount = int.parse((new RegExp(r'^(\d+)\s'))
             .firstMatch(
                 $replySectionCells[0].querySelector('.gray')?.text ?? '0 ')!
@@ -217,6 +222,11 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
             username: e.querySelector('strong a').text,
           ));
     }).toList();
+  } else {
+    topicTags = $replySection
+        .querySelectorAll('a.tag')
+        .map((e) => e.text.trim())
+        .toList();
   }
 
   final result = {
@@ -229,6 +239,7 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
         replyCount: replyCount,
         lastReplyAt: topicLastReplyAt,
         replyPageCount: replyPageCount,
+        tags: topicTags,
         member: MemberData(
             avatar: topicMemberAvatar, username: topicMemberUsername)),
     "replies": replies,

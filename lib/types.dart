@@ -25,6 +25,7 @@ class TopicData {
   int? lastReplyAt;
   List<SubtleData> subtles;
   int replyPageCount;
+  List<String>? tags;
 
   TopicData(
       {required this.id,
@@ -35,6 +36,7 @@ class TopicData {
       required this.replyCount,
       this.lastReplyAt,
       required this.subtles,
+      this.tags,
       this.replyPageCount = 0});
 }
 
