@@ -103,7 +103,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     final replyInfo = _getReplyInfo();
     return Scaffold(
         appBar: AppBar(
-          title: Text('主题: ${_getTopicTitle()}'),
+          title: Text('${_getTopicTitle()}'),
           actions: [
             PopupMenuButton(
               icon: Icon(Icons.more_horiz_outlined),
@@ -123,80 +123,83 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: _onScroll,
-          child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _getTopicTitle().length > 0
-                      ? Container(
-                          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          child: Text(
-                            _getTopicTitle(),
-                            style: TextStyle(
-                                color: Color(0xFF333333), fontSize: 26),
-                          ),
-                        )
-                      : Container(),
-                  _topicData != null
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                              TopicMetaInfo(_topicData!),
-                              ...(_topicData!.content != null
-                                  ? [
-                                      Container(
-                                          padding: EdgeInsets.fromLTRB(
-                                              10, 10, 10, 10),
-                                          child: HTMLContent(
-                                            content: _topicData!.content!,
-                                          ))
-                                    ]
-                                  : []),
-                              ...(_topicData!.subtles.length > 0
-                                  ? [
-                                      Divider(),
-                                      ..._topicData!.subtles
-                                          .asMap()
-                                          .entries
-                                          .map((entry) {
-                                        return TopicSubtle(
-                                            subtle: entry.value,
-                                            index: entry.key);
-                                      }).toList()
-                                    ]
-                                  : [])
-                            ])
-                      : LoadingContainer(),
-                  ...(replyInfo != null
-                      ? [
-                          Divider(),
-                          TopicReplyInfo(
-                              count: replyInfo['count'],
-                              time: replyInfo['lastReplyAt'])
-                        ]
-                      : []),
-                  Divider(),
-                  _replies != null
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: _replies!
-                              .asMap()
-                              .entries
-                              .map((entry) => ReplyItem(
-                                    reply: entry.value,
-                                    index: entry.key,
-                                  ))
-                              .toList())
-                      : LoadingContainer(),
-                  _showLoadMore
+          child: ListView.builder(
+              itemCount: 2 + (_replies?.length ?? 0),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _getTopicTitle().length > 0
+                          ? Container(
+                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              child: Text(
+                                _getTopicTitle(),
+                                style: TextStyle(
+                                    color: Color(0xFF333333), fontSize: 24),
+                              ),
+                            )
+                          : Container(),
+                      _topicData != null
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                  TopicMetaInfo(_topicData!),
+                                  ...(_topicData!.content != null
+                                      ? [
+                                          Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  10, 10, 10, 10),
+                                              child: HTMLContent(
+                                                content: _topicData!.content!,
+                                              ))
+                                        ]
+                                      : []),
+                                  ...(_topicData!.subtles.length > 0
+                                      ? [
+                                          Divider(),
+                                          ..._topicData!.subtles
+                                              .asMap()
+                                              .entries
+                                              .map((entry) {
+                                            return TopicSubtle(
+                                                subtle: entry.value,
+                                                index: entry.key);
+                                          }).toList()
+                                        ]
+                                      : [])
+                                ])
+                          : LoadingContainer(),
+                      ...(replyInfo != null
+                          ? [
+                              Divider(),
+                              TopicReplyInfo(
+                                  count: replyInfo['count'],
+                                  time: replyInfo['lastReplyAt'])
+                            ]
+                          : []),
+                    ],
+                  );
+                } else if (index == (_replies?.length ?? 0) + 1) {
+                  return _showLoadMore
                       ? Text('Load More')
                       : SizedBox(
                           height: 120,
-                        )
-                ]),
-          ),
+                        );
+                } else {
+                  return Column(
+                    children: [
+                      Divider(),
+                      _replies != null
+                          ? ReplyItem(
+                              reply: _replies![index - 1],
+                            )
+                          : LoadingContainer(),
+                    ],
+                  );
+                }
+              }),
         ));
   }
 }

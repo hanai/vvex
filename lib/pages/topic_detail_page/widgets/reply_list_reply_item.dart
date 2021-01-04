@@ -6,11 +6,9 @@ import 'package:vvex/utils/dt.dart' as dt;
 import 'package:vvex/widgets/html_content.dart';
 
 class ReplyItem extends StatefulWidget {
-  ReplyItem({Key? key, required this.reply, required this.index})
-      : super(key: key);
+  ReplyItem({Key? key, required this.reply}) : super(key: key);
 
   final ReplyData reply;
-  final int index;
 
   @override
   _ReplyItemState createState() => _ReplyItemState();
@@ -19,9 +17,7 @@ class ReplyItem extends StatefulWidget {
 class _ReplyItemState extends State<ReplyItem> {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      widget.index == 0 ? Container() : Divider(),
-      Container(
+    return Container(
         padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,8 +55,6 @@ class _ReplyItemState extends State<ReplyItem> {
             ),
             HTMLContent(content: widget.reply.content)
           ],
-        ),
-      )
-    ]);
+        ));
   }
 }
