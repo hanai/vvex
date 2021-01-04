@@ -92,6 +92,7 @@ class _TabViewState extends State<TabView>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView.builder(
         itemCount: _topicList.length,
         itemBuilder: (context, index) {
