@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
+import 'package:vvex/exceptions.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart' as dt;
 import 'package:vvex/utils/html.dart';
@@ -155,7 +156,10 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
       }));
   var doc = parse(res);
-  print(testIfLoged(doc));
+  if (!testIfLoged(doc) && hasLoginForm(doc)) {
+    throw (new NeedLoginException());
+  }
+
   var $main = doc.getElementById('Main');
   var $boxs = $main.querySelectorAll('.box');
 

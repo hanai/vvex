@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vvex/exceptions.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/widgets/html_content.dart';
@@ -44,7 +45,9 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
           _showLoadMore = _topicData!.replyPageCount > _curReplyPage;
         });
       }
-    });
+    }).catchError((err) {
+      print(err);
+    }, test: (e) => e is NeedLoginException);
   }
 
   _loadMoreReply() {

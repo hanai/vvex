@@ -4,3 +4,7 @@ import 'package:html/dom.dart';
 bool testIfLoged(Document doc) {
   return doc.querySelector('.member-activity-bar') != null;
 }
+
+bool hasLoginForm(Document doc) {
+  return doc.querySelector('form[action="/signin"]') != null;
+}
