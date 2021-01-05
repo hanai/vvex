@@ -113,41 +113,6 @@ Future<List<Topic>> getTabTopics(String tab) async {
   return topics;
 }
 
-// Future<List<ret.Reply>> getTopicReplies(int topicId,
-//     {bool refresh = false}) async {
-//   final http = new Http();
-//   var params = {
-//     "topic_id": topicId,
-//   };
-
-//   if (refresh) {
-//     params['now'] = DateTime.now().millisecondsSinceEpoch;
-//   }
-//   final res = await http.get<List<dynamic>>(
-//       'https://www.v2ex.com/api/replies/show.json',
-//       queryParameters: params);
-//   final List<ret.Reply> replies =
-//       res.data.map((e) => ret.Reply.fromJson(e)).toList();
-//   return replies;
-// }
-
-// Future<ret.Topic> getTopicDetail(int id, {bool refresh = false}) async {
-//   final http = new Http();
-//   var params = {
-//     "id": id,
-//   };
-
-//   if (refresh) {
-//     params['now'] = DateTime.now().millisecondsSinceEpoch;
-//   }
-
-//   final res = await http.get<List<dynamic>>(
-//       'https://www.v2ex.com/api/topics/show.json',
-//       queryParameters: params);
-//   final ret.Topic topic = ret.Topic.fromJson(res.data[0]);
-//   return topic;
-// }
-
 Future getTopicAndReplies(int id, {int page = 1}) async {
   final http = new Http();
   final String res = await http.getHTML('https://www.v2ex.com/t/$id?p=$page',
@@ -156,6 +121,7 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
       }));
   var doc = parse(res);
+
   if (!testIfLoged(doc) && hasLoginForm(doc)) {
     throw (new NeedLoginException());
   }
@@ -232,7 +198,6 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
         .map((e) => e.text.trim())
         .toList();
   }
-  print(topicLastReplyAt);
 
   final result = {
     "topic": TopicData(
