@@ -29,7 +29,11 @@ class TopicMetaInfo extends StatelessWidget {
               flex: 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [Text(df(topic.createdAt))],
+                children: [
+                  topic.createdAt != null
+                      ? Text(df(topic.createdAt!))
+                      : SizedBox()
+                ],
               ))
         ],
       ),

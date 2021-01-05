@@ -19,25 +19,29 @@ class TopicData {
   int id;
   String title;
   String? content;
-  int createdAt;
+  int? createdAt;
   MemberData member;
   int replyCount;
-  int? lastReplyAt;
-  List<SubtleData> subtles;
+  List<SubtleData>? subtles;
   int replyPageCount;
   List<String>? tags;
+  String? node;
+  String? lastReplyBy;
+  int? lastReplyAt;
 
   TopicData(
       {required this.id,
       required this.title,
       this.content,
-      required this.createdAt,
+      this.createdAt,
       required this.member,
       required this.replyCount,
-      this.lastReplyAt,
-      required this.subtles,
+      this.subtles,
       this.tags,
-      this.replyPageCount = 0});
+      this.node,
+      this.replyPageCount = 0,
+      this.lastReplyAt,
+      this.lastReplyBy});
 }
 
 class SubtleData {

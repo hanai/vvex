@@ -85,9 +85,9 @@ Future<List<Topic>> getNodeTopics(String node) async {
   return topics;
 }
 
-Future<List<Topic>> getTabTopics(String tab) async {
+Future<List<TopicData>> getTabTopics(String tab) async {
   final http = new Http();
-  final html = await http.getHTML('https://www.v2ex.com/?tab=' + tab);
+  final html = await http.getHTMLPC('https://www.v2ex.com/?tab=' + tab);
   var $document = parse(html);
   var $cells = $document.querySelectorAll('#Wrapper .cell.item');
 
@@ -102,12 +102,42 @@ Future<List<Topic>> getTabTopics(String tab) async {
     if (match != null && match.groupCount > 0) {
       topicId = int.parse(match.group(1)!);
     }
-    return Topic(
+
+    var node;
+    var lastReplyAt;
+    var lastReplyBy;
+    var createdAt;
+    var $topicInfo = $cell.querySelector('.topic_info');
+    if ($topicInfo != null) {
+      node = $topicInfo.querySelector('a.node')!.text!.trim();
+      var $time = $topicInfo.querySelector('span[title]');
+      var $lastReplyBy = $topicInfo.querySelector('strong:last-child');
+      if ($lastReplyBy != null) {
+        var $lastReplyByLink = $lastReplyBy.querySelector('a');
+        if ($lastReplyByLink != null) {
+          lastReplyBy = $lastReplyByLink.text;
+          lastReplyAt = dt.dp($time.attributes['title']!);
+        }
+      }
+
+      if (lastReplyBy != null) {
+        lastReplyAt = dt.dp($time.attributes['title']!);
+      } else {
+        createdAt = dt.dp($time.attributes['title']!);
+      }
+    }
+
+    return TopicData(
         id: topicId,
         title: $topicLink.text,
-        replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
-        author: $cell.querySelector('strong')?.text ?? '',
-        avatar: $cell.querySelector('.avatar').attributes['src']!);
+        member: MemberData(
+            username: $cell.querySelector('strong')?.text ?? '',
+            avatar: $cell.querySelector('.avatar').attributes['src']!),
+        replyCount: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
+        lastReplyAt: lastReplyAt,
+        lastReplyBy: lastReplyBy,
+        createdAt: createdAt,
+        node: node);
   }).toList();
 
   return topics;
@@ -115,11 +145,9 @@ Future<List<Topic>> getTabTopics(String tab) async {
 
 Future getTopicAndReplies(int id, {int page = 1}) async {
   final http = new Http();
-  final String res = await http.getHTML('https://www.v2ex.com/t/$id?p=$page',
-      options: Options(headers: {
-        HttpHeaders.userAgentHeader:
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
-      }));
+  final String res = await http.getHTMLPC(
+    'https://www.v2ex.com/t/$id?p=$page',
+  );
   var doc = parse(res);
 
   if (!testIfLoged(doc) && hasLoginForm(doc)) {

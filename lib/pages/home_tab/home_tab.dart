@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/services.dart';
+import 'package:vvex/types.dart';
+import 'package:vvex/widgets/loading_container.dart';
 import 'package:vvex/widgets/topic_list_topic_item.dart';
 
 class HomeTab extends StatefulWidget {
@@ -74,7 +76,8 @@ class TabView extends StatefulWidget {
 
 class _TabViewState extends State<TabView>
     with AutomaticKeepAliveClientMixin<TabView> {
-  List<TopicListTopicItem> _topicList = [];
+  List<TopicData> _topicList = [];
+  bool _initialized = false;
 
   @override
   void initState() {
@@ -82,7 +85,8 @@ class _TabViewState extends State<TabView>
 
     getTabTopics(widget.tab).then((topics) {
       setState(() {
-        _topicList = topics.map((e) => TopicListTopicItem(e)).toList();
+        _initialized = true;
+        _topicList = topics;
       });
     });
   }
@@ -94,10 +98,16 @@ class _TabViewState extends State<TabView>
   Widget build(BuildContext context) {
     super.build(context);
     return ListView.builder(
-        itemCount: _topicList.length,
+        itemCount: _initialized ? _topicList.length : 1,
         itemBuilder: (context, index) {
-          final item = _topicList[index];
-          return item.itemBuilder(context, index);
+          if (_initialized) {
+            return TopicListTopicItem(
+              topic: _topicList[index],
+              index: index,
+            );
+          } else {
+            return LoadingContainer();
+          }
         });
   }
 }

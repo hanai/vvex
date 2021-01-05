@@ -76,6 +76,7 @@ class Http {
     }
     options.headers.putIfAbsent(
         Headers.acceptHeader, () => 'text/html,application/xhtml+xml');
+
     options.responseType = ResponseType.plain;
 
     final res = await _dio.get(path,
@@ -85,5 +86,25 @@ class Http {
         onReceiveProgress: onReceiveProgress);
 
     return res.data.toString();
+  }
+
+  Future<String> getHTMLPC<T>(String path,
+      {Map<String, dynamic>? queryParameters,
+      Options? options,
+      CancelToken? cancelToken,
+      void Function(int, int)? onReceiveProgress}) async {
+    if (options == null) {
+      options = Options();
+    }
+    options.headers.putIfAbsent(
+        HttpHeaders.userAgentHeader,
+        () =>
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36');
+
+    return getHTML<T>(path,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/pages/login_page.dart';
-import 'package:vvex/widgets/home_tab.dart';
+import 'package:vvex/pages/home_tab/home_tab.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

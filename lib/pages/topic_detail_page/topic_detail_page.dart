@@ -140,7 +140,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                                     color: Color(0xFF333333), fontSize: 24),
                               ),
                             )
-                          : Container(),
+                          : SizedBox(),
                       _topicData != null
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -156,10 +156,10 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                                               ))
                                         ]
                                       : []),
-                                  ...(_topicData!.subtles.length > 0
+                                  ...((_topicData!.subtles ?? []).length > 0
                                       ? [
                                           Divider(),
-                                          ..._topicData!.subtles
+                                          ..._topicData!.subtles!
                                               .asMap()
                                               .entries
                                               .map((entry) {
