@@ -57,7 +57,8 @@ class _WebviewPageState extends State<WebviewPage> {
                 )
               ],
             ),
-            body: WebView(
+            body: SizedBox.expand(
+                child: WebView(
               onWebViewCreated: (controller) {
                 _webViewController = controller;
               },
@@ -81,7 +82,7 @@ class _WebviewPageState extends State<WebviewPage> {
               },
               javascriptMode: JavascriptMode.unrestricted,
               initialUrl: widget.url,
-            )),
+            ))),
         onWillPop: () async {
           if (_webViewController != null) {
             final canGoBack = await _webViewController!.canGoBack();

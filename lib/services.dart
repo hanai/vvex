@@ -170,9 +170,10 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
   var topicMemberUsername = $topicSection.querySelector('.header .gray a').text;
   var topicMemberAvatar =
       $topicSection.querySelector('.header .avatar').attributes['src'] ?? '';
-  var topicContent = $topicSection
-      .querySelector('.cell .topic_content')
-      ?.innerHtml; // 部分 topic 仅有 title
+  var $topicContent =
+      $topicSection.querySelector('.cell .topic_content'); // 部分 topic 仅有 title
+  var topicContent = $topicContent != null ? parseContent($topicContent) : '';
+
   int topicCreated = dt.dp(
       $topicSection.querySelector('.header .gray span').attributes['title'] ??
           '');
@@ -196,16 +197,19 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
         .querySelectorAll('a.tag')
         .map((e) => e.text.trim())
         .toList();
+    final replyCountAndLastReplyText =
+        $replySectionCells[0].querySelector('.gray')?.text;
     replyCount = int.parse((new RegExp(r'^(\d+)\s'))
-            .firstMatch(
-                $replySectionCells[0].querySelector('.gray')?.text ?? '0 ')!
+            .firstMatch(replyCountAndLastReplyText ?? '0 ')!
             .group(1) ??
         '0');
 
     if (replyCount > 0) {
-      topicLastReplyAt = dt.dp((new RegExp(r'\d{4}-.+$'))
-          .firstMatch($replySectionCells[0].querySelector('.gray')!.text)!
-          .group(0)!);
+      var match = (new RegExp(r'\d{4}-.+$'))
+          .firstMatch(replyCountAndLastReplyText ?? '');
+      if (match != null) {
+        topicLastReplyAt = dt.dp(match.group(0) ?? '');
+      }
       replyPageCount = int.parse(
           $replySection.querySelector('.page_input')?.attributes['max'] ?? '1');
     }
@@ -228,6 +232,7 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
         .map((e) => e.text.trim())
         .toList();
   }
+  print(topicLastReplyAt);
 
   final result = {
     "topic": TopicData(

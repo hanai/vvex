@@ -35,6 +35,7 @@ class _HTMLContentState extends State<HTMLContent> {
         },
         style: {
           "a": Style(textDecoration: TextDecoration.none),
+          "a[title^=\"在新窗口打开图片 \"]": Style()
         },
         onLinkTap: (url) {
           if (url.startsWith('/member/')) {
@@ -46,15 +47,15 @@ class _HTMLContentState extends State<HTMLContent> {
                   ),
                 ));
           } else {
-            RegExp topicReg =
-                new RegExp(r"^(https?:)?\/\/(www\.)?v2ex\.com\/t\/(\d+)$");
+            RegExp topicReg = new RegExp(
+                r"^((https?:)?\/\/(www\.)?v2ex\.com)?\/t\/(\d+)(#.+)?$");
             var match = topicReg.firstMatch(url);
-            if (match != null && match.groupCount == 3) {
+            if (match != null && match.groupCount == 5) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TopicDetailPage(
-                      topicId: int.parse(match.group(3)!),
+                      topicId: int.parse(match.group(4)!),
                     ),
                   ));
             } else {
