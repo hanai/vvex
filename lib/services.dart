@@ -218,7 +218,7 @@ Future getTopicAndReplies(int id,
       return element.querySelector('.no') != null;
     }).map((e) {
       return ReplyData(
-          content: e.querySelector('.reply_content').innerHtml,
+          content: parseContent(e.querySelector('.reply_content')),
           createdAt: dt.dp(e.querySelector('.ago').attributes['title']!),
           floor: int.parse(e.querySelector('.no').text),
           member: MemberData(

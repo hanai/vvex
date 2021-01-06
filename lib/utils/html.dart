@@ -19,8 +19,8 @@ String decodeEmail(String secret) {
   return res;
 }
 
-String parseContent(Element ele) {
-  ele.querySelectorAll('a[title^=\"在新窗口打开图片 \"]').forEach((e) {
+String parseContent(Element $ele) {
+  $ele.querySelectorAll('a[title^=\"在新窗口打开图片 \"]').forEach((e) {
     var $img = e.querySelector('img.embedded_image');
     if ($img != null) {
       e.parentNode.insertBefore($img, e);
@@ -28,15 +28,18 @@ String parseContent(Element ele) {
     }
   });
 
-  ele.querySelectorAll('.__cf_email__').forEach((element) {
+  $ele.querySelectorAll('.__cf_email__').forEach((element) {
     var secret = element.attributes['data-cfemail'];
     if (secret != null && secret.length > 0) {
       final email = decodeEmail(secret);
-      final p = element.parentNode;
-      element.remove();
-      p.text = email;
-      p.attributes['href'] = 'mailto:$email';
+      while (element.localName != 'a' && element.parent != null) {
+        element = element.parent;
+      }
+      if (element.localName == 'a') {
+        element.text = email;
+        element.attributes['href'] = 'mailto:$email';
+      }
     }
   });
-  return ele.innerHtml;
+  return $ele.innerHtml;
 }

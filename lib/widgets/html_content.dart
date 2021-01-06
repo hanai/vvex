@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_html/style.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/pages/user_info_page/user_info_page.dart';
 import 'package:vvex/pages/webview_page.dart';
@@ -33,7 +34,11 @@ class _HTMLContentState extends State<HTMLContent> {
         },
         style: {
           "a": Style(textDecoration: TextDecoration.none),
-          "a[title^=\"在新窗口打开图片 \"]": Style()
+          "a[title^=\"在新窗口打开图片 \"]": Style(),
+          "body": Style(
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.zero,
+              fontSize: FontSize(18)),
         },
         onLinkTap: (url) {
           if (url.startsWith('/member/')) {
@@ -44,6 +49,8 @@ class _HTMLContentState extends State<HTMLContent> {
                     username: url.substring(8),
                   ),
                 ));
+          } else if (url.startsWith('mailto:')) {
+            launch(url, forceSafariVC: false, forceWebView: false);
           } else {
             RegExp topicReg = new RegExp(
                 r"^((https?:)?\/\/(www\.)?v2ex\.com)?\/t\/(\d+)(#.+)?$");
