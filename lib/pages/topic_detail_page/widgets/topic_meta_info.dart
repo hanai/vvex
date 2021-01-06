@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart';
+import 'package:vvex/widgets/avatar_image.dart';
 
 class TopicMetaInfo extends StatelessWidget {
   final TopicData topic;
@@ -15,12 +14,10 @@ class TopicMetaInfo extends StatelessWidget {
       padding: EdgeInsets.all(10),
       child: Row(
         children: [
-          CachedNetworkImage(
-              imageUrl: topic.member.avatar,
-              width: 30,
-              height: 30,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              fit: BoxFit.contain),
+          AvatarImage(
+            imageUrl: topic.member.avatar,
+            size: 30,
+          ),
           SizedBox(
             width: 10,
           ),

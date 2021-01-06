@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:cached_network_image/cached_network_image.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_html/flutter_html.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_html/style.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/pages/user_info_page/user_info_page.dart';
 import 'package:vvex/pages/webview_page.dart';
+import 'package:vvex/widgets/v_network_image.dart';
 
 class HTMLContent extends StatefulWidget {
   HTMLContent({
@@ -29,8 +28,7 @@ class _HTMLContentState extends State<HTMLContent> {
         customRender: {
           "img": (context, parsedChild, attributes, element) {
             String src = attributes['src'] ?? '';
-            src = src.replaceAll(new RegExp(r'^\/\/'), 'https://');
-            return CachedNetworkImage(imageUrl: src);
+            return VNetworkImage(imageUrl: src);
           },
         },
         style: {

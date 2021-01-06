@@ -1,8 +1,7 @@
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart' as dt;
+import 'package:vvex/widgets/avatar_image.dart';
 import 'package:vvex/widgets/html_content.dart';
 
 class ReplyItem extends StatefulWidget {
@@ -18,18 +17,16 @@ class _ReplyItemState extends State<ReplyItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+        padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
-                CachedNetworkImage(
-                    imageUrl: widget.reply.member.avatar,
-                    width: 30,
-                    height: 30,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    fit: BoxFit.contain),
+                AvatarImage(
+                  imageUrl: widget.reply.member.avatar,
+                  size: 30,
+                ),
                 SizedBox(
                   width: 10,
                 ),

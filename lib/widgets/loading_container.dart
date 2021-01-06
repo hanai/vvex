@@ -17,7 +17,7 @@ class LoadingContainer extends StatelessWidget {
       children: [
         Padding(
           padding: this.padding,
-          child: Container(
+          child: SizedBox(
             width: this.width,
             height: this.height,
             child: CircularProgressIndicator(),

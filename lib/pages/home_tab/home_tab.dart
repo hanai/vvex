@@ -97,17 +97,24 @@ class _TabViewState extends State<TabView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-        itemCount: _initialized ? _topicList.length : 1,
-        itemBuilder: (context, index) {
-          if (_initialized) {
-            return TopicListTopicItem(
-              topic: _topicList[index],
-              index: index,
-            );
-          } else {
-            return LoadingContainer();
-          }
-        });
+    return ListView.separated(
+      itemCount: _initialized ? _topicList.length : 1,
+      itemBuilder: (context, index) {
+        if (_initialized) {
+          return TopicListTopicItem(
+            topic: _topicList[index],
+            index: index,
+          );
+        } else {
+          return LoadingContainer();
+        }
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return Divider(
+          height: 0,
+          thickness: 6,
+        );
+      },
+    );
   }
 }
