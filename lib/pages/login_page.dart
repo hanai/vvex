@@ -2,6 +2,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart' show parse;
+import 'package:provider/provider.dart';
+import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/services.dart';
 
 class LoginPage extends StatefulWidget {
@@ -101,6 +103,7 @@ class _LoginPageState extends State<LoginPage> {
     };
     final res = await signin(args);
     if (res) {
+      Provider.of<UserState>(context, listen: false).setLogged(true);
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

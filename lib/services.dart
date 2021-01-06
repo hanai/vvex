@@ -3,9 +3,12 @@ import 'dart:typed_data';
 
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
+import 'package:provider/provider.dart';
 import 'package:vvex/exceptions.dart';
+import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart' as dt;
 import 'package:vvex/utils/html.dart';
@@ -143,14 +146,17 @@ Future<List<TopicData>> getTabTopics(String tab) async {
   return topics;
 }
 
-Future getTopicAndReplies(int id, {int page = 1}) async {
+Future getTopicAndReplies(int id,
+    {required BuildContext context, int page = 1}) async {
   final http = new Http();
   final String res = await http.getHTMLPC(
     'https://www.v2ex.com/t/$id?p=$page',
   );
   var doc = parse(res);
 
-  if (!testIfLoged(doc) && hasLoginForm(doc)) {
+  bool logged = testIfLogged(doc);
+  Provider.of<UserState>(context, listen: false).setLogged(logged);
+  if (!testIfLogged(doc) && hasLoginForm(doc)) {
     throw (new NeedLoginException());
   }
 

@@ -36,7 +36,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
   }
 
   _getTopicAndReplies() {
-    getTopicAndReplies(widget.topicId).then((res) {
+    getTopicAndReplies(widget.topicId, context: context).then((res) {
       if (this.mounted) {
         setState(() {
           _topicData = res['topic'];
@@ -56,7 +56,11 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
     });
     int newPage = _curReplyPage + 1;
 
-    getTopicAndReplies(widget.topicId, page: newPage).then((res) {
+    getTopicAndReplies(
+      widget.topicId,
+      context: context,
+      page: newPage,
+    ).then((res) {
       if (this.mounted) {
         setState(() {
           _replies!.addAll(res['replies']);

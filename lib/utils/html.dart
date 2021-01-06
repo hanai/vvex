@@ -1,7 +1,7 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/dom.dart';
 
-bool testIfLoged(Document doc) {
+bool testIfLogged(Document doc) {
   return doc.querySelector('.member-activity-bar') != null;
 }
 

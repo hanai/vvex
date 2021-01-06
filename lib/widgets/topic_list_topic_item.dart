@@ -5,7 +5,7 @@ import 'package:vvex/utils/dt.dart' as dt;
 import 'package:vvex/widgets/avatar_image.dart';
 
 class NodeTag extends StatelessWidget {
-  String text;
+  final String text;
 
   NodeTag(this.text);
 

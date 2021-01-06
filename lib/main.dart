@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/home_tab/home_tab.dart';
+import 'package:vvex/providers/user_state.dart';
+import 'package:vvex/widgets/home_drawer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => UserState()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -43,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: HomeDrawer(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
