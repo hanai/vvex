@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -26,6 +28,8 @@ class _WebviewPageState extends State<WebviewPage> {
     super.initState();
 
     this._title = widget.title ?? widget.url;
+
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   void updatePageTitle() async {
