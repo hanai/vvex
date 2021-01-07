@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/home_tab/home_tab.dart';
 import 'package:vvex/providers/user_state.dart';
-import 'package:vvex/widgets/home_drawer.dart';
+import 'package:vvex/widgets/home_drawer/home_drawer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

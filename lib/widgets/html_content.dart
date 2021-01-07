@@ -6,7 +6,7 @@ import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/pages/user_info_page/user_info_page.dart';
-import 'package:vvex/pages/webview_page.dart';
+import 'package:vvex/pages/webview_page/webview_page.dart';
 import 'package:vvex/widgets/v_network_image.dart';
 
 class HTMLContent extends StatefulWidget {

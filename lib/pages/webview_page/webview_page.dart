@@ -5,6 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'widgets/top_bar.dart';
+
 class WebviewPage extends StatefulWidget {
   WebviewPage({
     Key? key,
@@ -20,7 +22,8 @@ class WebviewPage extends StatefulWidget {
 }
 
 class _WebviewPageState extends State<WebviewPage> {
-  String _title = '';
+  late String _title;
+  late String _url;
   WebViewController? _webViewController;
 
   @override
@@ -28,6 +31,7 @@ class _WebviewPageState extends State<WebviewPage> {
     super.initState();
 
     this._title = widget.title ?? widget.url;
+    this._url = widget.url;
 
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
@@ -43,23 +47,9 @@ class _WebviewPageState extends State<WebviewPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-            appBar: AppBar(
-              title: Text(_title),
-              actions: [
-                PopupMenuButton(
-                  icon: Icon(Icons.more_horiz_outlined),
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      {"label": '分享', "value": 'share'}
-                    ].map((item) {
-                      return PopupMenuItem<String>(
-                        value: item['value'],
-                        child: Text(item['label']!),
-                      );
-                    }).toList();
-                  },
-                )
-              ],
+            appBar: TopBar(
+              title: _title,
+              url: _url,
             ),
             body: SizedBox.expand(
                 child: WebView(
@@ -67,6 +57,9 @@ class _WebviewPageState extends State<WebviewPage> {
                 _webViewController = controller;
               },
               onPageFinished: (url) {
+                setState(() {
+                  _url = url;
+                });
                 updatePageTitle();
               },
               navigationDelegate: (req) {
@@ -74,6 +67,9 @@ class _WebviewPageState extends State<WebviewPage> {
                 if (url.startsWith('http://') ||
                     url.startsWith('https://') ||
                     url.startsWith('//')) {
+                  setState(() {
+                    _url = url;
+                  });
                   return NavigationDecision.navigate;
                 } else {
                   return canLaunch(req.url).then((res) {

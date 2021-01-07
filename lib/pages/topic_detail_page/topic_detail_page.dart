@@ -9,6 +9,7 @@ import 'widgets/reply_list_reply_item.dart';
 import 'widgets/topic_meta_info.dart';
 import 'widgets/topic_reply_info.dart';
 import 'widgets/topic_subtle.dart';
+import 'widgets/top_bar.dart';
 
 class TopicDetailPage extends StatefulWidget {
   TopicDetailPage({Key? key, this.title, required this.topicId})
@@ -106,24 +107,9 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
   Widget build(BuildContext context) {
     final replyInfo = _getReplyInfo();
     return Scaffold(
-        appBar: AppBar(
-          title: Text('${_getTopicTitle()}'),
-          actions: [
-            PopupMenuButton(
-              icon: Icon(Icons.more_horiz_outlined),
-              itemBuilder: (BuildContext context) {
-                return [
-                  {"label": '收藏', "value": 'archive'},
-                  {"label": '分享', "value": 'share'},
-                ].map((item) {
-                  return PopupMenuItem<String>(
-                    value: item['value'],
-                    child: Text(item['label']!),
-                  );
-                }).toList();
-              },
-            )
-          ],
+        appBar: TopBar(
+          title: '${_getTopicTitle()}',
+          id: widget.topicId,
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: _onScroll,

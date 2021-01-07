@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/dom.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -167,10 +167,15 @@ Future<List<TopicData>> getTabTopics(String tab) async {
 
 Future getTopicAndReplies(int id,
     {required BuildContext context, int page = 1}) async {
+  final stopwatch = Stopwatch()..start();
+  print('topic $id start fetch');
   final http = new Http();
   final String res = await http.getHTMLPC(
     'https://www.v2ex.com/t/$id?p=$page',
   );
+
+  print('topic $id fetch success: ${stopwatch.elapsed}');
+  stopwatch.reset();
   var doc = parse(res);
 
   var userState = updateUserState(context, doc);
@@ -250,6 +255,8 @@ Future getTopicAndReplies(int id,
         .map((e) => e.text.trim())
         .toList();
   }
+
+  print('topic $id parse success: ${stopwatch.elapsed}');
 
   final result = {
     "topic": TopicData(

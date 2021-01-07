@@ -7,7 +7,7 @@ import 'package:vvex/markdown_syntax/at_syntax.dart';
 import 'package:vvex/markdown_syntax/img_syntax.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/pages/user_info_page/user_info_page.dart';
-import 'package:vvex/pages/webview_page.dart';
+import 'package:vvex/pages/webview_page/webview_page.dart';
 
 class MarkdownContent extends StatefulWidget {
   MarkdownContent({

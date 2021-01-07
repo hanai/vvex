@@ -29,13 +29,17 @@ class VNetworkImage extends CachedNetworkImage {
       double? width,
       double? height,
       BoxFit? fit,
+      Key? key,
       PlaceholderWidgetBuilder? placeholder,
+      LoadingErrorWidgetBuilder? errorWidget,
       Map<String, String>? httpHeaders})
       : super(
+            key: key,
             imageUrl: fixImageUrl(imageUrl),
             width: width,
             height: height,
             fit: fit,
             placeholder: placeholder,
+            errorWidget: errorWidget,
             httpHeaders: createHttpHeaders(httpHeaders));
 }
