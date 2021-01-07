@@ -749,6 +749,13 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "0.2.19-nullsafety.6"
+  timeago:
+    dependency: "direct main"
+    description:
+      name: timeago
+      url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
+    source: hosted
+    version: "2.0.29"
   timing:
     dependency: transitive
     description:

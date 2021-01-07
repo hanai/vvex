@@ -27,7 +27,7 @@ class TopicSubtle extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        df(subtle.createdAt),
+                        DTUtil.timeago(subtle.createdAt),
                         style: TextStyle(),
                       )
                     ],

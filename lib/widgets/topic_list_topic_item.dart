@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/types.dart';
-import 'package:vvex/utils/dt.dart' as dt;
+import 'package:vvex/utils/dt.dart';
 import 'package:vvex/widgets/avatar_image.dart';
 
 class NodeTag extends StatelessWidget {
@@ -97,7 +97,7 @@ class TopicListTopicItem extends StatelessWidget {
                           topic.lastReplyBy != null && topic.lastReplyAt != null
                               ? Expanded(
                                   child: Text(
-                                  '最新回复 ${topic.lastReplyBy}@${dt.df(topic.lastReplyAt!)}',
+                                  '最新回复 ${topic.lastReplyBy}@${DTUtil.timeago(topic.lastReplyAt!)}',
                                   textAlign: TextAlign.end,
                                   style: TextStyle(
                                     fontSize: 12,
@@ -108,7 +108,7 @@ class TopicListTopicItem extends StatelessWidget {
                           topic.createdAt != null
                               ? Expanded(
                                   child: Text(
-                                  '发表于 ${dt.df(topic.createdAt!)}',
+                                  '发表于 ${DTUtil.timeago(topic.createdAt!)}',
                                   textAlign: TextAlign.end,
                                   style: TextStyle(
                                     fontSize: 12,

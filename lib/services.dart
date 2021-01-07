@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:vvex/exceptions.dart';
 import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/types.dart';
-import 'package:vvex/utils/dt.dart' as dt;
+import 'package:vvex/utils/dt.dart';
 import 'package:vvex/utils/html.dart';
 import 'package:vvex/utils/http.dart';
 
@@ -138,14 +138,14 @@ Future<List<TopicData>> getTabTopics(String tab) async {
         var $lastReplyByLink = $lastReplyBy.querySelector('a');
         if ($lastReplyByLink != null) {
           lastReplyBy = $lastReplyByLink.text;
-          lastReplyAt = dt.dp($time.attributes['title']!);
+          lastReplyAt = DTUtil.dp($time.attributes['title']!);
         }
       }
 
       if (lastReplyBy != null) {
-        lastReplyAt = dt.dp($time.attributes['title']!);
+        lastReplyAt = DTUtil.dp($time.attributes['title']!);
       } else {
-        createdAt = dt.dp($time.attributes['title']!);
+        createdAt = DTUtil.dp($time.attributes['title']!);
       }
     }
 
@@ -197,14 +197,14 @@ Future getTopicAndReplies(int id,
       $topicSection.querySelector('.cell .topic_content'); // 部分 topic 仅有 title
   var topicContent = $topicContent != null ? parseContent($topicContent) : '';
 
-  int topicCreated = dt.dp(
+  int topicCreated = DTUtil.dp(
       $topicSection.querySelector('.header .gray span').attributes['title'] ??
           '');
 
   var subtles = $topicSection.querySelectorAll('.subtle').map((e) {
     return SubtleData(
         createdAt:
-            dt.dp(e.querySelector('.fade span').attributes['title'] ?? ''),
+            DTUtil.dp(e.querySelector('.fade span').attributes['title'] ?? ''),
         content: e.querySelector('.topic_content').innerHtml);
   }).toList();
 
@@ -231,7 +231,7 @@ Future getTopicAndReplies(int id,
       var match = (new RegExp(r'\d{4}-.+$'))
           .firstMatch(replyCountAndLastReplyText ?? '');
       if (match != null) {
-        topicLastReplyAt = dt.dp(match.group(0) ?? '');
+        topicLastReplyAt = DTUtil.dp(match.group(0) ?? '');
       }
       replyPageCount = int.parse(
           $replySection.querySelector('.page_input')?.attributes['max'] ?? '1');
@@ -242,7 +242,7 @@ Future getTopicAndReplies(int id,
     }).map((e) {
       return ReplyData(
           content: parseContent(e.querySelector('.reply_content')),
-          createdAt: dt.dp(e.querySelector('.ago').attributes['title']!),
+          createdAt: DTUtil.dp(e.querySelector('.ago').attributes['title']!),
           floor: int.parse(e.querySelector('.no').text),
           member: MemberData(
             avatar: e.querySelector('.avatar').attributes['src']!,

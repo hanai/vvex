@@ -20,7 +20,9 @@ class TopicReplyInfo extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      count > 0 && time != null ? '最新回复 ${df(time!)}' : '',
+                      count > 0 && time != null
+                          ? '最新回复 ${DTUtil.timeago(time!)}'
+                          : '',
                     )
                   ],
                 ))

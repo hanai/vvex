@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/types.dart';
-import 'package:vvex/utils/dt.dart' as dt;
+import 'package:vvex/utils/dt.dart';
 import 'package:vvex/widgets/avatar_image.dart';
 import 'package:vvex/widgets/html_content.dart';
 
@@ -36,7 +36,7 @@ class _ReplyItemState extends State<ReplyItem> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(dt.df(widget.reply.createdAt)),
+                          Text(DTUtil.timeago(widget.reply.createdAt)),
                           SizedBox(
                             width: 10,
                           ),

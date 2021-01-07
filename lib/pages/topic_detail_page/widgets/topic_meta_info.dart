@@ -28,7 +28,7 @@ class TopicMetaInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   topic.createdAt != null
-                      ? Text(df(topic.createdAt!))
+                      ? Text(DTUtil.timeago(topic.createdAt!))
                       : SizedBox()
                 ],
               ))
