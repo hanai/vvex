@@ -78,7 +78,7 @@ class _WebviewPageState extends State<WebviewPage> {
                 } else {
                   return canLaunch(req.url).then((res) {
                     if (res) {
-                      launch(url);
+                      launch(url, forceSafariVC: false, forceWebView: false);
                     }
                     return NavigationDecision.prevent;
                   });

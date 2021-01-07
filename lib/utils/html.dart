@@ -1,8 +1,17 @@
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/dom.dart';
 
-bool testIfLogged(Document doc) {
-  return doc.querySelector('.member-activity-bar') != null;
+Map<String, dynamic> extractUserState(Document doc) {
+  final bool logged = doc.querySelector('.member-activity-bar') != null;
+  if (logged) {
+    final rightbar = doc.getElementById('Rightbar');
+    final $avatar = rightbar.querySelector('img.avatar');
+    final String avatar = $avatar.attributes['src']!;
+    final String username = $avatar.attributes['alt']!;
+    return {"logged": logged, "username": username, "avatar": avatar};
+  } else {
+    return {"logged": logged};
+  }
 }
 
 bool hasLoginForm(Document doc) {

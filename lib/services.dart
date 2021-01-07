@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 // ignore: import_of_legacy_library_into_null_safe
+import 'package:html/dom.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
 import 'package:provider/provider.dart';
 import 'package:vvex/exceptions.dart';
@@ -13,6 +15,23 @@ import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart' as dt;
 import 'package:vvex/utils/html.dart';
 import 'package:vvex/utils/http.dart';
+
+Map<String, dynamic> updateUserState(BuildContext context, Document doc) {
+  final userState = extractUserState(doc);
+  bool logged = userState['logged'];
+  if (logged) {
+    final String username = userState['username'];
+    final String avatar = userState['avatar'];
+    Provider.of<UserState>(context, listen: false)
+        .setState(logged: logged, username: username, avatar: avatar);
+  } else {
+    Provider.of<UserState>(context, listen: false).setState(
+      logged: logged,
+    );
+  }
+
+  return userState;
+}
 
 Future<bool> signin(Map<String, dynamic> args) {
   final http = new Http();
@@ -154,9 +173,8 @@ Future getTopicAndReplies(int id,
   );
   var doc = parse(res);
 
-  bool logged = testIfLogged(doc);
-  Provider.of<UserState>(context, listen: false).setLogged(logged);
-  if (!testIfLogged(doc) && hasLoginForm(doc)) {
+  var userState = updateUserState(context, doc);
+  if (!userState['logged'] && hasLoginForm(doc)) {
     throw (new NeedLoginException());
   }
 

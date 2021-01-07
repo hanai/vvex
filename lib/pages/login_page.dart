@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
     };
     final res = await signin(args);
     if (res) {
-      Provider.of<UserState>(context, listen: false).setLogged(true);
+      Provider.of<UserState>(context, listen: false).setState(logged: true);
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

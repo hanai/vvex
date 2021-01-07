@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vvex/providers/user_state.dart';
+import 'package:vvex/widgets/avatar_image.dart';
 
 class HomeDrawer extends StatefulWidget {
   HomeDrawer({
@@ -16,30 +17,59 @@ class _HomeDrawerState extends State<HomeDrawer> {
   Widget build(BuildContext context) {
     return Consumer<UserState>(builder: (context, userState, child) {
       return Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             DrawerHeader(
-              child: Text('logged: ${userState.logged}'),
+              child: Column(
+                children: [
+                  ...(userState.logged
+                      ? [
+                          AvatarImage(
+                            imageUrl: userState.avatar!,
+                            size: 80,
+                          ),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Text(userState.username!),
+                        ]
+                      : [])
+                ],
+              ),
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
             ),
             ListTile(
-              title: Text('Item 1'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
+              title: Text('节点收藏'),
+              onTap: () {},
             ),
             ListTile(
-              title: Text('Item 2'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
+              title: Text('主题收藏'),
+              onTap: () {},
             ),
+            Expanded(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ...(userState.logged
+                        ? [
+                            Text(
+                              '登出',
+                              textAlign: TextAlign.center,
+                            )
+                          ]
+                        : [])
+                  ],
+                )
+              ],
+            ))
           ],
         ),
       );

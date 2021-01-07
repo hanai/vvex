@@ -46,26 +46,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final floatingActionButton =
+        Consumer<UserState>(builder: (context, userState, child) {
+      return userState.logged
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginPage(title: '登录')),
+                );
+              },
+              tooltip: 'New Topic',
+              child: Icon(Icons.add),
+            )
+          : SizedBox();
+    });
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      drawer: HomeDrawer(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[Flexible(child: HomeTab())],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage(title: '登录')),
-          );
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        drawer: HomeDrawer(),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[Flexible(child: HomeTab())],
+        ),
+        floatingActionButton:
+            floatingActionButton is SizedBox ? null : floatingActionButton);
   }
 }
