@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/types.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vvex/widgets/loading_container.dart';
 import 'package:vvex/widgets/topic_list_topic_item.dart';
 
@@ -83,7 +84,11 @@ class _TabViewState extends State<TabView>
   void initState() {
     super.initState();
 
-    getTabTopics(widget.tab).then((topics) {
+    _getTabTopics();
+  }
+
+  Future _getTabTopics() {
+    return getTabTopics(widget.tab).then((topics) {
       setState(() {
         _initialized = true;
         _topicList = topics;
@@ -91,30 +96,43 @@ class _TabViewState extends State<TabView>
     });
   }
 
+  void _onRefresh() async {
+    await _getTabTopics();
+    _refreshController.refreshCompleted();
+  }
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   @override
   bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.separated(
-      itemCount: _initialized ? _topicList.length : 1,
-      itemBuilder: (context, index) {
-        if (_initialized) {
-          return TopicListTopicItem(
-            topic: _topicList[index],
-            index: index,
-          );
-        } else {
-          return LoadingContainer();
-        }
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(
-          height: 0,
-          thickness: 6,
-        );
-      },
-    );
+    return SmartRefresher(
+        enablePullDown: true,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        child: ListView.separated(
+          itemCount: _initialized ? _topicList.length : 1,
+          itemBuilder: (context, index) {
+            if (_initialized) {
+              return TopicListTopicItem(
+                topic: _topicList[index],
+                index: index,
+              );
+            } else {
+              return LoadingContainer();
+            }
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider(
+              height: 0,
+              thickness: 6,
+            );
+          },
+        ));
   }
 }

@@ -18,7 +18,8 @@ class DTUtil {
 
   static String timeago(int timestamp) {
     ta.setLocaleMessages('zh_CN', ta.ZhCnMessages());
-    return ta.format(DateTime.fromMillisecondsSinceEpoch(timestamp),
-        locale: 'zh_CN');
+    return ta
+        .format(DateTime.fromMillisecondsSinceEpoch(timestamp), locale: 'zh_CN')
+        .replaceAll(new RegExp(r'\s'), '');
   }
 }
