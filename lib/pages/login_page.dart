@@ -3,20 +3,13 @@ import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart' show parse;
 import 'package:provider/provider.dart';
+import 'package:vvex/get_it.dart';
 import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/services.dart';
+import 'package:vvex/services/navigation_service.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -25,6 +18,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final NavigationService _navigationService = locator<NavigationService>();
+
   String? _once;
   Uint8List? _captchaImg;
   String? _fieldNameName;
@@ -104,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
     final res = await signin(args);
     if (res) {
       Provider.of<UserState>(context, listen: false).setState(logged: true);
-      Navigator.pop(context);
+      _navigationService.goBack();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("登录失败"),
@@ -138,148 +133,130 @@ class _LoginPageState extends State<LoginPage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Form(
-                    key: _keyForm,
-                    onChanged: () {
-                      final ctx = primaryFocus?.context;
-                      if (ctx != null) {
-                        Form.of(ctx)?.save();
-                      }
-                    },
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 80,
-                                padding: EdgeInsets.only(right: 20),
-                                child: Text(
-                                  '用户名',
-                                  textAlign: TextAlign.right,
-                                ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Form(
+                  key: _keyForm,
+                  onChanged: () {
+                    final ctx = primaryFocus?.context;
+                    if (ctx != null) {
+                      Form.of(ctx)?.save();
+                    }
+                  },
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              padding: EdgeInsets.only(right: 20),
+                              child: Text(
+                                '用户名',
+                                textAlign: TextAlign.right,
                               ),
-                              Flexible(
-                                child: TextFormField(
-                                  controller: _nameController,
-                                  decoration: const InputDecoration(
-                                    hintText: '用户名',
-                                  ),
-                                  validator: (value) {
-                                    if (value != null && value.isEmpty) {
-                                      return '请输入用户名';
-                                    }
-                                    return null;
-                                  },
+                            ),
+                            Flexible(
+                              child: TextFormField(
+                                controller: _nameController,
+                                decoration: const InputDecoration(
+                                  hintText: '用户名',
                                 ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 80,
-                                padding: EdgeInsets.only(right: 20),
-                                child: Text(
-                                  '密码',
-                                  textAlign: TextAlign.right,
-                                ),
+                                validator: (value) {
+                                  if (value != null && value.isEmpty) {
+                                    return '请输入用户名';
+                                  }
+                                  return null;
+                                },
                               ),
-                              Flexible(
-                                child: TextFormField(
-                                  controller: _passController,
-                                  obscureText: true,
-                                  decoration: const InputDecoration(
-                                    hintText: '密码',
-                                  ),
-                                  validator: (value) {
-                                    if (value != null && value.isEmpty) {
-                                      return '请输入密码';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 80,
-                                padding: EdgeInsets.only(right: 20),
-                                child: Text(
-                                  '验证码',
-                                  textAlign: TextAlign.right,
-                                ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              padding: EdgeInsets.only(right: 20),
+                              child: Text(
+                                '密码',
+                                textAlign: TextAlign.right,
                               ),
-                              Flexible(
-                                child: TextFormField(
-                                  controller: _captchaController,
-                                  decoration: const InputDecoration(
-                                    hintText: '验证码',
-                                  ),
-                                  validator: (value) {
-                                    if (value != null && value.isEmpty) {
-                                      return '请输入验证码';
-                                    }
-                                    return null;
-                                  },
+                            ),
+                            Flexible(
+                              child: TextFormField(
+                                controller: _passController,
+                                obscureText: true,
+                                decoration: const InputDecoration(
+                                  hintText: '密码',
                                 ),
+                                validator: (value) {
+                                  if (value != null && value.isEmpty) {
+                                    return '请输入密码';
+                                  }
+                                  return null;
+                                },
                               ),
-                              _captchaImg != null
-                                  ? Image.memory(
-                                      _captchaImg!,
-                                      width: captchaImgWidth,
-                                      height: captchaImgHeight,
-                                    )
-                                  : Placeholder(
-                                      fallbackWidth: captchaImgWidth,
-                                      fallbackHeight: captchaImgHeight,
-                                    )
-                            ],
-                          ),
-                          Builder(
-                            builder: (BuildContext context) {
-                              return ElevatedButton(
-                                  onPressed: () {
-                                    if (_keyForm.currentState?.validate() ??
-                                        false) {
-                                      _execLogin(context);
-                                    }
-                                  },
-                                  child: Text('登录'));
-                            },
-                          )
-                        ]))),
-          ],
-        ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 80,
+                              padding: EdgeInsets.only(right: 20),
+                              child: Text(
+                                '验证码',
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                            Flexible(
+                              child: TextFormField(
+                                controller: _captchaController,
+                                decoration: const InputDecoration(
+                                  hintText: '验证码',
+                                ),
+                                validator: (value) {
+                                  if (value != null && value.isEmpty) {
+                                    return '请输入验证码';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            _captchaImg != null
+                                ? Image.memory(
+                                    _captchaImg!,
+                                    width: captchaImgWidth,
+                                    height: captchaImgHeight,
+                                  )
+                                : Placeholder(
+                                    fallbackWidth: captchaImgWidth,
+                                    fallbackHeight: captchaImgHeight,
+                                  )
+                          ],
+                        ),
+                        Builder(
+                          builder: (BuildContext context) {
+                            return ElevatedButton(
+                                onPressed: () {
+                                  if (_keyForm.currentState?.validate() ??
+                                      false) {
+                                    _execLogin(context);
+                                  }
+                                },
+                                child: Text('登录'));
+                          },
+                        )
+                      ]))),
+        ],
       ),
     );
   }

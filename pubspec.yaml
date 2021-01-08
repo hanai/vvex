@@ -36,12 +36,12 @@ dependencies:
   cached_network_image: ^2.5.0
   shared_preferences: 0.5.12+4
   json_annotation: 4.0.0-nullsafety.0
-  flutter_markdown: ^0.5.1
   flutter_html: ^1.1.1
   provider: 5.0.0-nullsafety.2
   share: ^0.6.5+4
   timeago: ^2.0.29
   pull_to_refresh: ^1.6.3
+  get_it: 6.0.0-nullsafety.1
 
 
   # The following adds the Cupertino Icons font to your application.

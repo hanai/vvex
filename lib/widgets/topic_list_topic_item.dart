@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vvex/get_it.dart';
 import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
+import 'package:vvex/services/navigation_service.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart';
 import 'package:vvex/widgets/avatar_image.dart';
+import 'package:vvex/router.dart' as router;
 
 class NodeTag extends StatelessWidget {
   final String text;
@@ -30,20 +33,16 @@ class TopicListTopicItem extends StatelessWidget {
   final TopicData topic;
   final int? index;
 
+  final NavigationService _navigationService = locator<NavigationService>();
+
   TopicListTopicItem({required this.topic, this.index});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TopicDetailPage(
-                    title: this.topic.title,
-                    topicId: topic.id,
-                  )),
-        );
+        _navigationService.navigateTo(router.TopicPageRoute,
+            arguments: {"title": this.topic.title, "topicId": topic.id});
       },
       child: Padding(
           padding: EdgeInsets.all(10),

@@ -4,10 +4,10 @@ import 'package:flutter_html/flutter_html.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
-import 'package:vvex/pages/user_info_page/user_info_page.dart';
-import 'package:vvex/pages/webview_page/webview_page.dart';
+import 'package:vvex/get_it.dart';
+import 'package:vvex/services/navigation_service.dart';
 import 'package:vvex/widgets/v_network_image.dart';
+import 'package:vvex/router.dart' as router;
 
 class HTMLContent extends StatefulWidget {
   HTMLContent({
@@ -22,6 +22,8 @@ class HTMLContent extends StatefulWidget {
 }
 
 class _HTMLContentState extends State<HTMLContent> {
+  final NavigationService _navigationService = locator<NavigationService>();
+
   @override
   Widget build(BuildContext context) {
     return Html(
@@ -42,13 +44,8 @@ class _HTMLContentState extends State<HTMLContent> {
         },
         onLinkTap: (url) {
           if (url.startsWith('/member/')) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserInfoPage(
-                    username: url.substring(8),
-                  ),
-                ));
+            _navigationService.navigateTo(router.MemberPageRoute,
+                arguments: {"username": url.substring(8)});
           } else if (url.startsWith('mailto:')) {
             launch(url, forceSafariVC: false, forceWebView: false);
           } else {
@@ -56,21 +53,11 @@ class _HTMLContentState extends State<HTMLContent> {
                 r"^((https?:)?\/\/(www\.)?v2ex\.com)?\/t\/(\d+)(#.+)?$");
             var match = topicReg.firstMatch(url);
             if (match != null && match.groupCount == 5) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TopicDetailPage(
-                      topicId: int.parse(match.group(4)!),
-                    ),
-                  ));
+              _navigationService.navigateTo(router.TopicPageRoute,
+                  arguments: {"topicId": int.parse(match.group(4)!)});
             } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WebviewPage(
-                          url: url,
-                        )),
-              );
+              _navigationService
+                  .navigateTo(router.WebViewPageRoute, arguments: {"url": url});
             }
           }
         });

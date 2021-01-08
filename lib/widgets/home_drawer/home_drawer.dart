@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/providers/user_state.dart';
+import 'package:vvex/services/navigation_service.dart';
 import 'package:vvex/widgets/avatar_image.dart';
 import 'package:vvex/widgets/home_drawer/drawer_button.dart';
+
+import '../../get_it.dart';
+import '../../router.dart' as router;
 
 class HomeDrawer extends StatefulWidget {
   HomeDrawer({
@@ -15,11 +18,10 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
+  final NavigationService _navigationService = locator<NavigationService>();
+
   void handleClickLogin() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage(title: '登录')),
-    );
+    _navigationService.navigateTo(router.LoginPageRoute);
   }
 
   @override

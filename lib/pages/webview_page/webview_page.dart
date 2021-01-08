@@ -7,8 +7,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import 'widgets/top_bar.dart';
 
-class WebviewPage extends StatefulWidget {
-  WebviewPage({
+class WebViewPage extends StatefulWidget {
+  WebViewPage({
     Key? key,
     required this.url,
     this.title,
@@ -18,10 +18,10 @@ class WebviewPage extends StatefulWidget {
   final String? title;
 
   @override
-  _WebviewPageState createState() => _WebviewPageState();
+  _WebViewPageState createState() => _WebViewPageState();
 }
 
-class _WebviewPageState extends State<WebviewPage> {
+class _WebViewPageState extends State<WebViewPage> {
   String? _title;
   late String _url;
   WebViewController? _webViewController;
@@ -37,7 +37,7 @@ class _WebviewPageState extends State<WebviewPage> {
   }
 
   void updatePageTitle() async {
-    final String title = await _webViewController?.getTitle() ?? '';
+    final String? title = await _webViewController?.getTitle();
     setState(() {
       _title = title;
     });
@@ -48,7 +48,7 @@ class _WebviewPageState extends State<WebviewPage> {
     return WillPopScope(
         child: Scaffold(
             appBar: TopBar(
-              title: _title ?? _url,
+              title: _title,
               url: _url,
             ),
             body: SizedBox.expand(
