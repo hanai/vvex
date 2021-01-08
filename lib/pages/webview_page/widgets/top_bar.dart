@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
 class TopBar extends AppBar {
-  TopBar({required String title, required String url})
-      : super(title: Text(title), actions: [
+  TopBar({String? title, required String url})
+      : super(title: Text(title ?? url), actions: [
           PopupMenuButton(
             icon: Icon(Icons.more_horiz_outlined),
             itemBuilder: (BuildContext context) {
@@ -20,7 +20,7 @@ class TopBar extends AppBar {
             },
             onSelected: (String v) {
               if (v == 'share') {
-                if (title.length > 0) {
+                if (title != null && title.length > 0) {
                   Share.share('$title - $url');
                 } else {
                   Share.share('$url');

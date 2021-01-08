@@ -22,7 +22,7 @@ class WebviewPage extends StatefulWidget {
 }
 
 class _WebviewPageState extends State<WebviewPage> {
-  late String _title;
+  String? _title;
   late String _url;
   WebViewController? _webViewController;
 
@@ -30,7 +30,7 @@ class _WebviewPageState extends State<WebviewPage> {
   void initState() {
     super.initState();
 
-    this._title = widget.title ?? widget.url;
+    this._title = widget.title;
     this._url = widget.url;
 
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
@@ -48,7 +48,7 @@ class _WebviewPageState extends State<WebviewPage> {
     return WillPopScope(
         child: Scaffold(
             appBar: TopBar(
-              title: _title,
+              title: _title ?? _url,
               url: _url,
             ),
             body: SizedBox.expand(

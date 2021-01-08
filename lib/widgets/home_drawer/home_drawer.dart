@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/widgets/avatar_image.dart';
+import 'package:vvex/widgets/home_drawer/drawer_button.dart';
 
 class HomeDrawer extends StatefulWidget {
   HomeDrawer({
@@ -13,6 +15,13 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
+  void handleClickLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage(title: '登录')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<UserState>(builder: (context, userState, child) {
@@ -42,12 +51,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 color: Colors.blue,
               ),
             ),
-            ListTile(
-              title: Text('节点收藏'),
+            DrawerButton(
+              title: '节点收藏',
+              icon: Icon(Icons.login),
               onTap: () {},
             ),
-            ListTile(
-              title: Text('主题收藏'),
+            DrawerButton(
+              title: '主题收藏',
+              icon: Icon(Icons.login),
               onTap: () {},
             ),
             Expanded(
@@ -55,19 +66,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...(userState.logged
-                        ? [
-                            Text(
-                              '登出',
-                              textAlign: TextAlign.center,
-                            )
-                          ]
-                        : [])
-                  ],
-                )
+                ...(userState.logged
+                    ? [
+                        DrawerButton(
+                          title: '登出',
+                          icon: Icon(Icons.logout),
+                          onTap: () {},
+                        ),
+                      ]
+                    : [
+                        DrawerButton(
+                            title: '登录',
+                            icon: Icon(Icons.login),
+                            onTap: handleClickLogin),
+                      ])
               ],
             ))
           ],
