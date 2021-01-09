@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 
 class VNetworkImage extends CachedNetworkImage {
   static Map<String, String> createHttpHeaders(

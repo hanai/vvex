@@ -8,26 +8,25 @@ import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart';
-import 'package:provider/provider.dart';
 import 'package:vvex/exceptions.dart';
-import 'package:vvex/providers/user_state.dart';
+import 'package:vvex/get_it.dart';
+import 'package:vvex/services/user_service.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart';
 import 'package:vvex/utils/html.dart';
 import 'package:vvex/utils/http.dart';
 
 Map<String, dynamic> updateUserState(BuildContext context, Document doc) {
+  final _userService = locator<UserService>();
   final userState = extractUserState(doc);
   bool logged = userState['logged'];
   if (logged) {
     final String username = userState['username'];
     final String avatar = userState['avatar'];
-    Provider.of<UserState>(context, listen: false)
-        .setState(logged: logged, username: username, avatar: avatar);
+    _userService.setUserState(
+        isAuthed: logged, username: username, avatar: avatar);
   } else {
-    Provider.of<UserState>(context, listen: false).setState(
-      logged: logged,
-    );
+    _userService.setIsAuthed(logged);
   }
 
   return userState;

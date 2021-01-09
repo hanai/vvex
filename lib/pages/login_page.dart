@@ -2,11 +2,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:html/parser.dart' show parse;
-import 'package:provider/provider.dart';
 import 'package:vvex/get_it.dart';
-import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/services/navigation_service.dart';
+import 'package:vvex/services/user_service.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key, required this.title}) : super(key: key);
@@ -19,6 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final NavigationService _navigationService = locator<NavigationService>();
+  final UserService _userService = locator<UserService>();
 
   String? _once;
   Uint8List? _captchaImg;
@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
     };
     final res = await signin(args);
     if (res) {
-      Provider.of<UserState>(context, listen: false).setState(logged: true);
+      _userService.setIsAuthed(true);
       _navigationService.goBack();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

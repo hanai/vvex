@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:vvex/get_it.dart';
 import 'package:vvex/router.dart' as router;
-import 'package:vvex/providers/user_state.dart';
 import 'package:vvex/services/navigation_service.dart';
+import 'package:vvex/services/user_service.dart';
 import 'package:vvex/widgets/home_drawer/home_drawer.dart';
 
 import 'home_tab/home_tab.dart';
@@ -17,9 +16,48 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageFloatingActionButton extends StatefulWidget {
+  @override
+  _HomePageFloatingActionButtonState createState() =>
+      _HomePageFloatingActionButtonState();
+}
+
+class _HomePageFloatingActionButtonState
+    extends State<HomePageFloatingActionButton> {
+  final UserService _userService = locator<UserService>();
   final NavigationService _navigationService = locator<NavigationService>();
 
+  @override
+  void initState() {
+    _userService.addListener(_userStateUpdate);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _userService.removeListener(_userStateUpdate);
+    super.dispose();
+  }
+
+  _userStateUpdate() {
+    setState(() => {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _userService.isAuthed
+        ? FloatingActionButton(
+            onPressed: () {
+              _navigationService.navigateTo(router.NewTopicPageRoute);
+            },
+            tooltip: 'New Topic',
+            child: Icon(Icons.add),
+          )
+        : SizedBox();
+  }
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -27,19 +65,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final floatingActionButton =
-        Consumer<UserState>(builder: (context, userState, child) {
-      return userState.logged
-          ? FloatingActionButton(
-              onPressed: () {
-                _navigationService.navigateTo(router.NewTopicPageRoute);
-              },
-              tooltip: 'New Topic',
-              child: Icon(Icons.add),
-            )
-          : SizedBox();
-    });
-
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -50,7 +75,6 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[Flexible(child: HomeTab())],
         ),
-        floatingActionButton:
-            floatingActionButton is SizedBox ? null : floatingActionButton);
+        floatingActionButton: HomePageFloatingActionButton());
   }
 }
