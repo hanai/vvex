@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   sqflite:
   path: 1.8.0-nullsafety.3
   url_launcher: 6.0.0-nullsafety.1

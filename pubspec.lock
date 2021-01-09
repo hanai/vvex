@@ -252,7 +252,7 @@ packages:
       name: file
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "5.2.1"
+    version: "6.0.0-nullsafety.4"
   fixnum:
     dependency: transitive
     description:
@@ -286,6 +286,11 @@ packages:
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
     version: "1.1.1"
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -372,7 +377,7 @@ packages:
       name: intl
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "0.16.1"
+    version: "0.17.0-nullsafety.2"
   io:
     dependency: transitive
     description:
@@ -449,7 +454,7 @@ packages:
       name: node_io
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "1.2.0"
+    version: "1.1.1"
   octo_image:
     dependency: transitive
     description:
@@ -540,7 +545,7 @@ packages:
       name: platform
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "2.2.1"
+    version: "3.0.0-nullsafety.4"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -561,7 +566,7 @@ packages:
       name: process
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "3.0.13"
+    version: "4.0.0-nullsafety.4"
   provider:
     dependency: "direct main"
     description:
