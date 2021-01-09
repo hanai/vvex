@@ -125,9 +125,12 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                         ? Container(
                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                             child: Text(
-                              _getTopicTitle(),
+                              _getTopicTitle()
+                                  .replaceAll(new RegExp(r'\r\n|\r|\n'), ' '),
                               style: TextStyle(
-                                  color: Color(0xFF333333), fontSize: 24),
+                                color: Color(0xFF333333),
+                                fontSize: 24,
+                              ),
                             ),
                           )
                         : SizedBox(),
@@ -148,7 +151,9 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                                     : []),
                                 ...((_topicData!.subtles ?? []).length > 0
                                     ? [
-                                        Divider(),
+                                        Divider(
+                                          height: 0,
+                                        ),
                                         ..._topicData!.subtles!
                                             .asMap()
                                             .entries
@@ -163,7 +168,9 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
                         : LoadingContainer(),
                     ...(replyInfo != null
                         ? [
-                            Divider(),
+                            Divider(
+                              height: 0,
+                            ),
                             TopicReplyInfo(
                                 count: replyInfo['count'],
                                 time: replyInfo['lastReplyAt'])

@@ -75,7 +75,7 @@ class TopicListTopicItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    topic.title,
+                    topic.title.replaceAll(new RegExp(r'\r\n|\r|\n'), ' '),
                     style: TextStyle(fontSize: 20),
                     softWrap: true,
                   ),

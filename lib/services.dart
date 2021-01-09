@@ -195,7 +195,7 @@ Future getTopicAndReplies(int id,
       $topicSection.querySelector('.header .avatar').attributes['src'] ?? '';
   var $topicContent =
       $topicSection.querySelector('.cell .topic_content'); // 部分 topic 仅有 title
-  var topicContent = $topicContent != null ? parseContent($topicContent) : '';
+  var topicContent = $topicContent != null ? parseContent($topicContent) : null;
 
   int topicCreated = DTUtil.dp(
       $topicSection.querySelector('.header .gray span').attributes['title'] ??
