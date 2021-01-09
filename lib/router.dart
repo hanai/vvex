@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vvex/pages/home_page.dart';
+import 'package:vvex/pages/home_page/home_page.dart';
 import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/member_page/user_info_page.dart';
 import 'package:vvex/pages/topic_page/topic_page.dart';

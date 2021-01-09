@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:vvex/services/navigation_service.dart';
 import 'package:vvex/services/user_service.dart';
 import 'package:vvex/widgets/avatar_image.dart';
-import 'package:vvex/widgets/home_drawer/drawer_button.dart';
 
 import 'package:vvex/get_it.dart';
 import 'package:vvex/router.dart' as router;
+
+import './drawer_button.dart';
 
 class HomeDrawer extends StatefulWidget {
   HomeDrawer({
@@ -32,12 +33,16 @@ class _HomeDrawerState extends State<HomeDrawer> {
     super.dispose();
   }
 
-  void handleClickLogin() {
-    _navigationService.navigateTo(router.LoginPageRoute);
-  }
-
   void _userStateUpdate() {
     setState(() => {});
+  }
+
+  void _handleClickLogout() {
+    _userService.logout();
+  }
+
+  void _handleClickLogin() {
+    _navigationService.navigateTo(router.LoginPageRoute);
   }
 
   @override
@@ -86,16 +91,15 @@ class _HomeDrawerState extends State<HomeDrawer> {
               ...(_userService.isAuthed
                   ? [
                       DrawerButton(
-                        title: '登出',
-                        icon: Icon(Icons.logout),
-                        onTap: () {},
-                      ),
+                          title: '登出',
+                          icon: Icon(Icons.logout),
+                          onTap: _handleClickLogout),
                     ]
                   : [
                       DrawerButton(
                           title: '登录',
                           icon: Icon(Icons.login),
-                          onTap: handleClickLogin),
+                          onTap: _handleClickLogin),
                     ])
             ],
           ))

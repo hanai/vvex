@@ -3,9 +3,9 @@ import 'package:vvex/get_it.dart';
 import 'package:vvex/router.dart' as router;
 import 'package:vvex/services/navigation_service.dart';
 import 'package:vvex/services/user_service.dart';
-import 'package:vvex/widgets/home_drawer/home_drawer.dart';
+import 'package:vvex/pages/home_tab/home_tab.dart';
 
-import 'home_tab/home_tab.dart';
+import 'widgets/home_drawer/home_drawer.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
@@ -66,15 +66,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        drawer: HomeDrawer(),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[Flexible(child: HomeTab())],
-        ),
-        floatingActionButton: HomePageFloatingActionButton());
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      drawer: HomeDrawer(),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[Flexible(child: HomeTab())],
+      ),
+      // floatingActionButton: HomePageFloatingActionButton(),
+    );
   }
 }

@@ -25,14 +25,22 @@ class Http {
 
   static final Http _instance = Http._internal();
 
+  static PersistCookieJar? cookieJar;
+
   factory Http() {
     getApplicationDocumentsDirectory().then((appDocDir) {
       final String appDocPath = appDocDir.path;
-      final cookieJar = PersistCookieJar(dir: appDocPath + "/.cookies/");
+      cookieJar = PersistCookieJar(dir: appDocPath + "/.cookies/");
       _dio.interceptors.add(CookieManager(cookieJar));
       _dio.interceptors.add(new UAInterceptor());
     });
     return _instance;
+  }
+
+  void clearCookie() {
+    if (cookieJar != null) {
+      cookieJar!.deleteAll();
+    }
   }
 
   Http._internal();
