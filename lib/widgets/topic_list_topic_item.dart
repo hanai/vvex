@@ -30,12 +30,13 @@ class NodeTag extends StatelessWidget {
 }
 
 class TopicListTopicItem extends StatelessWidget {
+  final Key? key;
   final TopicData topic;
   final int? index;
 
   final NavigationService _navigationService = locator<NavigationService>();
 
-  TopicListTopicItem({required this.topic, this.index});
+  TopicListTopicItem({required this.topic, this.key, this.index});
 
   @override
   Widget build(BuildContext context) {

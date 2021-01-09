@@ -180,6 +180,7 @@ class _TopicDetailPageState extends State<TopicDetailPage> {
               } else {
                 return _replies != null
                     ? ReplyItem(
+                        key: ValueKey(_replies![index - 1].floor),
                         reply: _replies![index - 1],
                       )
                     : LoadingContainer();

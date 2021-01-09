@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/types.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vvex/widgets/loading_container.dart';
 import 'package:vvex/widgets/topic_list_topic_item.dart';
@@ -120,6 +121,7 @@ class _TabViewState extends State<TabView>
           itemBuilder: (context, index) {
             if (_initialized) {
               return TopicListTopicItem(
+                key: ValueKey(_topicList[index].id),
                 topic: _topicList[index],
                 index: index,
               );
