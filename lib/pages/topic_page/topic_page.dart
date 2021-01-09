@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/exceptions.dart';
+import 'package:vvex/pages/topic_page/widgets/no_auth_message.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/widgets/html_content.dart';
@@ -27,6 +28,7 @@ class _TopicPageState extends State<TopicPage> {
   int _curReplyPage = 0;
   bool _showLoadMore = false;
   bool _isLoadingMoreReply = false;
+  Exception? _pageException;
 
   @override
   void initState() {
@@ -46,8 +48,10 @@ class _TopicPageState extends State<TopicPage> {
         });
       }
     }).catchError((err) {
-      print(err);
-    }, test: (e) => e is NeedLoginException);
+      setState(() {
+        _pageException = err;
+      });
+    }, test: (e) => e is NoAuthException);
   }
 
   _loadMoreReply() {
@@ -164,7 +168,9 @@ class _TopicPageState extends State<TopicPage> {
                                       ]
                                     : [])
                               ])
-                        : LoadingContainer(),
+                        : _pageException is NoAuthException
+                            ? NoAuthMessage()
+                            : LoadingContainer(),
                     ...(replyInfo != null
                         ? [
                             Divider(

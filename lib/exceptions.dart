@@ -1,3 +1,3 @@
-class NeedLoginException implements Exception {
+class NoAuthException implements Exception {
   String errMsg() => 'user need login before continue';
 }

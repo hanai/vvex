@@ -2,15 +2,15 @@
 import 'package:html/dom.dart';
 
 Map<String, dynamic> extractUserState(Document doc) {
-  final bool logged = doc.querySelector('.member-activity-bar') != null;
-  if (logged) {
+  final bool isAuthed = doc.querySelector('.member-activity-bar') != null;
+  if (isAuthed) {
     final rightbar = doc.getElementById('Rightbar');
     final $avatar = rightbar.querySelector('img.avatar');
     final String avatar = $avatar.attributes['src']!;
     final String username = $avatar.attributes['alt']!;
-    return {"logged": logged, "username": username, "avatar": avatar};
+    return {"isAuthed": isAuthed, "username": username, "avatar": avatar};
   } else {
-    return {"logged": logged};
+    return {"isAuthed": isAuthed};
   }
 }
 

@@ -72,7 +72,6 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     var captchaImg;
-    print('captcha image url: ' + captchaUrl);
     if (captchaUrl != null) {
       captchaImg = await getSigninCaptchaImage(captchaUrl);
     }
@@ -97,8 +96,13 @@ class _LoginPageState extends State<LoginPage> {
       "next": "/"
     };
     final res = await signin(args);
-    if (res) {
-      _userService.setIsAuthed(true);
+    final bool success = res['success'];
+    if (success) {
+      final Map<String, dynamic> userState = res['data'];
+      _userService.setUserState(
+          isAuthed: userState['isAuthed'],
+          username: userState['username'],
+          avatar: userState['avatar']);
       _navigationService.goBack();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

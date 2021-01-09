@@ -19,7 +19,7 @@ import 'package:vvex/utils/http.dart';
 Map<String, dynamic> updateUserState(BuildContext context, Document doc) {
   final _userService = locator<UserService>();
   final userState = extractUserState(doc);
-  bool logged = userState['logged'];
+  bool logged = userState['isAuthed'];
   if (logged) {
     final String username = userState['username'];
     final String avatar = userState['avatar'];
@@ -32,7 +32,7 @@ Map<String, dynamic> updateUserState(BuildContext context, Document doc) {
   return userState;
 }
 
-Future<bool> signin(Map<String, dynamic> args) {
+Future<Map<String, dynamic>> signin(Map<String, dynamic> args) {
   final http = new Http();
   return http
       .postForm("https://www.v2ex.com/signin",
@@ -52,10 +52,14 @@ Future<bool> signin(Map<String, dynamic> args) {
     if (headersMap.containsKey('set-cookie')) {
       final vals = headersMap['set-cookie'];
       if (vals != null && vals.length > 1) {
-        return true;
+        return http.getHTMLPC('https://www.v2ex.com/about').then((html) {
+          final doc = parse(html);
+          final userState = extractUserState(doc);
+          return {"success": true, "data": userState};
+        });
       }
     }
-    return false;
+    return {"success": false};
   });
 }
 
@@ -178,8 +182,8 @@ Future getTopicAndReplies(int id,
   var doc = parse(res);
 
   var userState = updateUserState(context, doc);
-  if (!userState['logged'] && hasLoginForm(doc)) {
-    throw (new NeedLoginException());
+  if (!userState['isAuthed'] && hasLoginForm(doc)) {
+    throw (NoAuthException());
   }
 
   var $main = doc.getElementById('Main');
