@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vvex/pages/home_page.dart';
 import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/member_page/user_info_page.dart';
-import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
+import 'package:vvex/pages/topic_page/topic_page.dart';
 import 'package:vvex/pages/webview_page/webview_page.dart';
 
 const String HomePageRoute = '/';
@@ -29,7 +29,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       var topicId = args['topicId'] as int;
       var title = args['title'] as String;
       return MaterialPageRoute(
-          builder: (context) => TopicDetailPage(
+          builder: (context) => TopicPage(
                 title: title,
                 topicId: topicId,
               ));

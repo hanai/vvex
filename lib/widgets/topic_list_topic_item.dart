@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/get_it.dart';
-import 'package:vvex/pages/topic_detail_page/topic_detail_page.dart';
 import 'package:vvex/services/navigation_service.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart';

@@ -11,18 +11,17 @@ import 'widgets/topic_reply_info.dart';
 import 'widgets/topic_subtle.dart';
 import 'widgets/top_bar.dart';
 
-class TopicDetailPage extends StatefulWidget {
-  TopicDetailPage({Key? key, this.title, required this.topicId})
-      : super(key: key);
+class TopicPage extends StatefulWidget {
+  TopicPage({Key? key, this.title, required this.topicId}) : super(key: key);
 
   final String? title;
   final int topicId;
 
   @override
-  _TopicDetailPageState createState() => _TopicDetailPageState();
+  _TopicPageState createState() => _TopicPageState();
 }
 
-class _TopicDetailPageState extends State<TopicDetailPage> {
+class _TopicPageState extends State<TopicPage> {
   TopicData? _topicData;
   List<ReplyData>? _replies;
   int _curReplyPage = 0;
