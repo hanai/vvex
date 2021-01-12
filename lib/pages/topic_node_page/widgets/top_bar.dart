@@ -5,7 +5,7 @@ import 'package:share/share.dart';
 
 class TopBar extends AppBar {
   TopBar({String? title, required String name})
-      : super(title: Text(title ?? name), actions: [
+      : super(title: Text('节点：' + (title ?? name)), actions: [
           PopupMenuButton(
             icon: Icon(Icons.more_horiz_outlined),
             itemBuilder: (BuildContext context) {
