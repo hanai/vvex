@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:dio/dio.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -16,7 +15,7 @@ import 'package:vvex/utils/dt.dart';
 import 'package:vvex/utils/html.dart';
 import 'package:vvex/utils/http.dart';
 
-Map<String, dynamic> updateUserState(BuildContext context, Document doc) {
+Map<String, dynamic> updateUserState(Document doc) {
   final _userService = locator<UserService>();
   final userState = extractUserState(doc);
   bool logged = userState['isAuthed'];
@@ -82,34 +81,6 @@ Future<String> getSigninPageHTML() async {
   return html;
 }
 
-Future<List<Topic>> getNodeTopics(String node) async {
-  final http = new Http();
-  final html = await http.getHTML('https://www.v2ex.com/go/' + node);
-  var $document = parse(html);
-  var $cells = $document.querySelectorAll('#Wrapper .cell');
-
-  var topics = $cells.where(($cell) {
-    return $cell.querySelector('.topic-link') != null;
-  }).map(($cell) {
-    final $topicLink = $cell.querySelector('.topic-link');
-    final link = $topicLink.attributes['href']!;
-    RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
-    var match = reg.firstMatch(link);
-    int topicId = 0;
-    if (match != null && match.groupCount > 0) {
-      topicId = int.parse(match.group(1)!);
-    }
-    return Topic(
-        id: topicId,
-        title: $topicLink.text,
-        replies: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
-        author: $cell.querySelector('strong')?.text ?? '',
-        avatar: $cell.querySelector('.avatar').attributes['src']!);
-  }).toList();
-
-  return topics;
-}
-
 Future<List<TopicData>> getTabTopics(String tab) async {
   final http = new Http();
   final html = await http.getHTMLPC('https://www.v2ex.com/?tab=' + tab);
@@ -173,8 +144,7 @@ Future<List<TopicData>> getTabTopics(String tab) async {
   return topics;
 }
 
-Future getTopicAndReplies(int id,
-    {required BuildContext context, int page = 1}) async {
+Future getTopicAndReplies(int id, {int page = 1}) async {
   final stopwatch = Stopwatch()..start();
   print('topic $id start fetch');
   final http = new Http();
@@ -186,7 +156,7 @@ Future getTopicAndReplies(int id,
   stopwatch.reset();
   var doc = parse(res);
 
-  var userState = updateUserState(context, doc);
+  var userState = updateUserState(doc);
   if (!userState['isAuthed'] && hasLoginForm(doc)) {
     throw (NoAuthException());
   }
@@ -283,4 +253,61 @@ Future getTopicAndReplies(int id,
   };
 
   return result;
+}
+
+Future getNodeTopics(String name, {int page = 1}) async {
+  final http = new Http();
+  final html = await http.getHTMLPC('https://www.v2ex.com/go/' + name);
+  var $document = parse(html);
+  var $cells = $document.querySelectorAll('#TopicsNode .cell');
+
+  var topics = $cells.where(($cell) {
+    return $cell.querySelector('.topic-link') != null;
+  }).map(($cell) {
+    final $topicLink = $cell.querySelector('.topic-link');
+    final String link = $topicLink.attributes['href']!;
+    RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
+    var match = reg.firstMatch(link);
+    int topicId = 0;
+    if (match != null && match.groupCount > 0) {
+      topicId = int.parse(match.group(1)!);
+    }
+
+    var node;
+    var lastReplyAt;
+    var lastReplyBy;
+    var createdAt;
+    var $topicInfo = $cell.querySelector('.topic_info');
+    if ($topicInfo != null) {
+      var $time = $topicInfo.querySelector('span[title]');
+      var $lastReplyBy = $topicInfo.querySelector('strong:last-child');
+      if ($lastReplyBy != null) {
+        var $lastReplyByLink = $lastReplyBy.querySelector('a');
+        if ($lastReplyByLink != null) {
+          lastReplyBy = $lastReplyByLink.text;
+          lastReplyAt = DTUtil.dp($time.attributes['title']!);
+        }
+      }
+
+      if (lastReplyBy != null) {
+        lastReplyAt = DTUtil.dp($time.attributes['title']!);
+      } else {
+        createdAt = DTUtil.dp($time.attributes['title']!);
+      }
+    }
+
+    return TopicData(
+        id: topicId,
+        title: $topicLink.text,
+        member: MemberData(
+            username: $cell.querySelector('strong')?.text ?? '',
+            avatar: $cell.querySelector('.avatar').attributes['src']!),
+        replyCount: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
+        lastReplyAt: lastReplyAt,
+        lastReplyBy: lastReplyBy,
+        createdAt: createdAt,
+        node: node);
+  }).toList();
+
+  return topics;
 }

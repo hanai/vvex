@@ -38,7 +38,9 @@ class _TopicPageState extends State<TopicPage> {
   }
 
   _getTopicAndReplies() {
-    getTopicAndReplies(widget.topicId, context: context).then((res) {
+    getTopicAndReplies(
+      widget.topicId,
+    ).then((res) {
       if (this.mounted) {
         setState(() {
           _topicData = res['topic'];
@@ -62,7 +64,6 @@ class _TopicPageState extends State<TopicPage> {
 
     getTopicAndReplies(
       widget.topicId,
-      context: context,
       page: newPage,
     ).then((res) {
       if (this.mounted) {

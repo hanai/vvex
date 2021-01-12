@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vvex/pages/home_page/home_page.dart';
 import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/member_page/user_info_page.dart';
-import 'package:vvex/pages/node_page/node_page.dart';
+import 'package:vvex/pages/topic_node_page/topic_node_page.dart';
 import 'package:vvex/pages/topic_page/topic_page.dart';
 import 'package:vvex/pages/webview_page/webview_page.dart';
 
@@ -41,7 +41,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       var name = args['name'] as String;
       var title = args['title'] as String;
       return MaterialPageRoute(
-          builder: (context) => NodePage(
+          builder: (context) => TopicNodePage(
                 title: title,
                 name: name,
               ));

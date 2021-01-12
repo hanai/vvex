@@ -5,28 +5,7 @@ import 'package:vvex/types.dart';
 import 'package:vvex/utils/dt.dart';
 import 'package:vvex/widgets/avatar_image.dart';
 import 'package:vvex/router.dart' as router;
-
-class NodeTag extends StatelessWidget {
-  final TopicNode node;
-
-  NodeTag({required this.node});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 20,
-        padding: EdgeInsets.symmetric(horizontal: 5),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Color(0xfff5f5f5)),
-        child: Center(
-          child: Text(
-            node.title,
-            style: TextStyle(fontSize: 12, color: Color(0xff999999)),
-          ),
-        ));
-  }
-}
+import 'package:vvex/widgets/node_tag.dart';
 
 class TopicListTopicItem extends StatelessWidget {
   final Key? key;

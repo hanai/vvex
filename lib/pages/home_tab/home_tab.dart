@@ -91,8 +91,8 @@ class _TabViewState extends State<TabView>
   Future _getTabTopics() {
     return getTabTopics(widget.tab).then((topics) {
       setState(() {
-        _initialized = true;
         _topicList = topics;
+        _initialized = true;
       });
     });
   }
