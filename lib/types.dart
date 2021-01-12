@@ -25,7 +25,7 @@ class TopicData {
   List<SubtleData>? subtles;
   int replyPageCount;
   List<String>? tags;
-  String? node;
+  TopicNode? node;
   String? lastReplyBy;
   int? lastReplyAt;
 
@@ -69,4 +69,11 @@ class ReplyData {
     required this.member,
     required this.floor,
   });
+}
+
+class TopicNode {
+  String name;
+  String title;
+
+  TopicNode({required this.name, required this.title});
 }

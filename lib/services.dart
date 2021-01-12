@@ -134,7 +134,12 @@ Future<List<TopicData>> getTabTopics(String tab) async {
     var createdAt;
     var $topicInfo = $cell.querySelector('.topic_info');
     if ($topicInfo != null) {
-      node = $topicInfo.querySelector('a.node')!.text!.trim();
+      final $node = $topicInfo.querySelector('a.node');
+      final nodeTitle = $node.text!.trim();
+      final nodeName = (new RegExp(r'\/go\/(.+)$'))
+          .firstMatch($node.attributes['href']!)!
+          .group(1)!;
+      node = TopicNode(title: nodeTitle, name: nodeName);
       var $time = $topicInfo.querySelector('span[title]');
       var $lastReplyBy = $topicInfo.querySelector('strong:last-child');
       if ($lastReplyBy != null) {

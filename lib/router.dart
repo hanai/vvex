@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vvex/pages/home_page/home_page.dart';
 import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/member_page/user_info_page.dart';
+import 'package:vvex/pages/node_page/node_page.dart';
 import 'package:vvex/pages/topic_page/topic_page.dart';
 import 'package:vvex/pages/webview_page/webview_page.dart';
 
@@ -13,6 +14,8 @@ const String LoginPageRoute = '/login';
 const String TopicPageRoute = '/topic';
 
 const String MemberPageRoute = '/member';
+
+const String NodePageRoute = '/node';
 
 const String NewTopicPageRoute = '/new_topic';
 
@@ -32,6 +35,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => TopicPage(
                 title: title,
                 topicId: topicId,
+              ));
+    case NodePageRoute:
+      var args = settings.arguments! as Map<String, dynamic>;
+      var name = args['name'] as String;
+      var title = args['title'] as String;
+      return MaterialPageRoute(
+          builder: (context) => NodePage(
+                title: title,
+                name: name,
               ));
     case WebViewPageRoute:
       var args = settings.arguments! as Map<String, dynamic>;

@@ -7,9 +7,9 @@ import 'package:vvex/widgets/avatar_image.dart';
 import 'package:vvex/router.dart' as router;
 
 class NodeTag extends StatelessWidget {
-  final String text;
+  final TopicNode node;
 
-  NodeTag(this.text);
+  NodeTag({required this.node});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class NodeTag extends StatelessWidget {
             color: Color(0xfff5f5f5)),
         child: Center(
           child: Text(
-            text,
+            node.title,
             style: TextStyle(fontSize: 12, color: Color(0xff999999)),
           ),
         ));
@@ -84,7 +84,9 @@ class TopicListTopicItem extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      topic.node != null ? NodeTag(topic.node!) : SizedBox(),
+                      topic.node != null
+                          ? NodeTag(node: topic.node!)
+                          : SizedBox(),
                       SizedBox(
                         width: 6,
                       ),

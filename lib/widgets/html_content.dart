@@ -6,6 +6,7 @@ import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vvex/get_it.dart';
 import 'package:vvex/services/navigation_service.dart';
+import 'package:vvex/utils/browser.dart';
 import 'package:vvex/widgets/v_network_image.dart';
 import 'package:vvex/router.dart' as router;
 
@@ -56,8 +57,7 @@ class _HTMLContentState extends State<HTMLContent> {
               _navigationService.navigateTo(router.TopicPageRoute,
                   arguments: {"topicId": int.parse(match.group(4)!)});
             } else {
-              _navigationService
-                  .navigateTo(router.WebViewPageRoute, arguments: {"url": url});
+              BrowserUtil.open(url);
             }
           }
         });
