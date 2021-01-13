@@ -41,6 +41,7 @@ dependencies:
   provider: 5.0.0-nullsafety.2
   share: ^0.6.5+4
   timeago: ^2.0.29
+  package_info: 0.4.3+2
   pull_to_refresh: ^1.6.3
   flutter_web_browser: ^0.13.1
   get_it: 6.0.0-nullsafety.1
