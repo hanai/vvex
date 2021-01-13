@@ -45,6 +45,10 @@ class _HomeDrawerState extends State<HomeDrawer> {
     _navigationService.navigateTo(router.LoginPageRoute);
   }
 
+  void _handleClickAbout() {
+    _navigationService.navigateTo(router.AboutPageRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -88,6 +92,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              DrawerButton(
+                title: '关于',
+                icon: Icon(Icons.info_outline_rounded),
+                onTap: _handleClickAbout,
+              ),
               ...(_userService.isAuthed
                   ? [
                       DrawerButton(
