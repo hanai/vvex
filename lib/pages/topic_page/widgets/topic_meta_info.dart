@@ -28,7 +28,7 @@ class TopicMetaInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   topic.createdAt != null
-                      ? Text(DTUtil.timeago(topic.createdAt!))
+                      ? Text(DTUtil.timeDisplay(topic.createdAt!))
                       : SizedBox()
                 ],
               ))

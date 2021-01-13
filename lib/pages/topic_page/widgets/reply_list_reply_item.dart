@@ -36,7 +36,7 @@ class _ReplyItemState extends State<ReplyItem> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(DTUtil.timeago(widget.reply.createdAt)),
+                          Text(DTUtil.timeDisplay(widget.reply.createdAt)),
                           SizedBox(
                             width: 10,
                           ),

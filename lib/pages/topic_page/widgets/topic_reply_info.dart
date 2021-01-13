@@ -21,7 +21,7 @@ class TopicReplyInfo extends StatelessWidget {
                   children: [
                     Text(
                       count > 0 && time != null
-                          ? '最新回复 ${DTUtil.timeago(time!)}'
+                          ? '最新回复 ${DTUtil.timeDisplay(time!)}'
                           : '',
                     )
                   ],

@@ -77,7 +77,7 @@ class TopicListTopicItem extends StatelessWidget {
                           topic.lastReplyBy != null && topic.lastReplyAt != null
                               ? Expanded(
                                   child: Text(
-                                  '最新回复 ${topic.lastReplyBy}@${DTUtil.timeago(topic.lastReplyAt!)}',
+                                  '最新回复 ${topic.lastReplyBy}@${DTUtil.timeDisplay(topic.lastReplyAt!)}',
                                   textAlign: TextAlign.end,
                                   style: TextStyle(
                                     fontSize: 12,
@@ -88,7 +88,7 @@ class TopicListTopicItem extends StatelessWidget {
                           topic.createdAt != null
                               ? Expanded(
                                   child: Text(
-                                  '发表于 ${DTUtil.timeago(topic.createdAt!)}',
+                                  '发表于 ${DTUtil.timeDisplay(topic.createdAt!)}',
                                   textAlign: TextAlign.end,
                                   style: TextStyle(
                                     fontSize: 12,
