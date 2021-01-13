@@ -5,7 +5,6 @@ import 'package:vvex/pages/login_page.dart';
 import 'package:vvex/pages/member_page/user_info_page.dart';
 import 'package:vvex/pages/topic_node_page/topic_node_page.dart';
 import 'package:vvex/pages/topic_page/topic_page.dart';
-import 'package:vvex/pages/webview_page/webview_page.dart';
 
 const String HomePageRoute = '/';
 
@@ -18,8 +17,6 @@ const String MemberPageRoute = '/member';
 const String NodePageRoute = '/node';
 
 const String NewTopicPageRoute = '/new_topic';
-
-const String WebViewPageRoute = '/web_view';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -44,15 +41,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => TopicNodePage(
                 title: title,
                 name: name,
-              ));
-    case WebViewPageRoute:
-      var args = settings.arguments! as Map<String, dynamic>;
-      var url = args['url'] as String;
-      var title = args['title'] as String;
-      return MaterialPageRoute(
-          builder: (context) => WebViewPage(
-                url: url,
-                title: title,
               ));
     case MemberPageRoute:
       var args = settings.arguments! as Map<String, dynamic>;

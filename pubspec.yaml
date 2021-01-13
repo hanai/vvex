@@ -28,7 +28,6 @@ dependencies:
   sqflite:
   path: 1.8.0-nullsafety.3
   url_launcher: 6.0.0-nullsafety.1
-  webview_flutter: 1.0.7
   http: ^0.12.2
   html: ^0.14.0+4
   cookie_jar: ^1.0.0

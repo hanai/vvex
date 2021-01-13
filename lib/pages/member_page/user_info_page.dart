@@ -14,7 +14,7 @@ class _MemberPageState extends State<MemberPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('用户: ${widget.username}'),
+          title: Text('用户：${widget.username}'),
         ),
         body: SingleChildScrollView(child: Column()));
   }
