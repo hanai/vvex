@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vvex/exceptions.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/types.dart';
@@ -27,7 +31,6 @@ class _TopicPageState extends State<TopicPage> {
   List<ReplyData>? _replies;
   int _curReplyPage = 0;
   bool _showLoadMore = false;
-  bool _isLoadingMoreReply = false;
   Exception? _pageException;
 
   @override
@@ -37,8 +40,8 @@ class _TopicPageState extends State<TopicPage> {
     this._getTopicAndReplies();
   }
 
-  _getTopicAndReplies() {
-    getTopicAndReplies(
+  Future _getTopicAndReplies() {
+    return getTopicAndReplies(
       widget.topicId,
     ).then((res) {
       if (this.mounted) {
@@ -56,13 +59,10 @@ class _TopicPageState extends State<TopicPage> {
     }, test: (e) => e is NoAuthException || e is NotFoundTopicException);
   }
 
-  _loadMoreReply() {
-    setState(() {
-      _isLoadingMoreReply = true;
-    });
+  Future _loadMoreReply() {
     int newPage = _curReplyPage + 1;
 
-    getTopicAndReplies(
+    return getTopicAndReplies(
       widget.topicId,
       page: newPage,
     ).then((res) {
@@ -71,7 +71,6 @@ class _TopicPageState extends State<TopicPage> {
           _replies!.addAll(res['replies']);
           _curReplyPage = newPage;
           _showLoadMore = _topicData!.replyPageCount > newPage;
-          _isLoadingMoreReply = false;
         });
       }
     });
@@ -98,14 +97,20 @@ class _TopicPageState extends State<TopicPage> {
     }
   }
 
-  bool _onScroll(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels > scrollInfo.metrics.maxScrollExtent - 100) {
-      if (!_isLoadingMoreReply && _showLoadMore) {
-        _loadMoreReply();
-      }
-    }
-    return true;
+  void _onRefresh() async {
+    await _getTopicAndReplies();
+    _refreshController.refreshCompleted();
   }
+
+  void _onLoading() async {
+    if (_showLoadMore) {
+      await _loadMoreReply();
+      _refreshController.loadComplete();
+    }
+  }
+
+  RefreshController _refreshController =
+  RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -115,102 +120,124 @@ class _TopicPageState extends State<TopicPage> {
           title: '${_getTopicTitle()}',
           id: widget.topicId,
         ),
-        body: NotificationListener<ScrollNotification>(
-          onNotification: _onScroll,
-          child: ListView.separated(
-            itemCount: 2 + (_replies?.length ?? 0),
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _getTopicTitle().length > 0
-                        ? Container(
-                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                            child: Text(
-                              _getTopicTitle()
-                                  .replaceAll(new RegExp(r'\r\n|\r|\n'), ' '),
-                              style: TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: 24,
-                              ),
-                            ),
-                          )
-                        : SizedBox(),
-                    _topicData != null
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                                TopicMetaInfo(_topicData!),
-                                ...(_topicData!.content != null
-                                    ? [
-                                        Container(
-                                            padding: EdgeInsets.fromLTRB(
-                                                10, 10, 10, 10),
-                                            child: HTMLContent(
-                                              content: _topicData!.content!,
-                                            ))
-                                      ]
-                                    : []),
-                                ...((_topicData!.subtles ?? []).length > 0
-                                    ? [
-                                        Divider(
-                                          height: 0,
-                                        ),
-                                        ..._topicData!.subtles!
-                                            .asMap()
-                                            .entries
-                                            .map((entry) {
-                                          return TopicSubtle(
-                                              subtle: entry.value,
-                                              index: entry.key);
-                                        }).toList()
-                                      ]
-                                    : [])
-                              ])
-                        : _pageException is NoAuthException
-                            ? NoAuthMessage()
-                            : _pageException is NotFoundTopicException
-                                ? NotFoundTopicMessage()
-                                : LoadingContainer(),
-                    ...(replyInfo != null
-                        ? [
-                            Divider(
-                              height: 0,
-                            ),
-                            TopicReplyInfo(
-                                count: replyInfo['count'],
-                                time: replyInfo['lastReplyAt'])
-                          ]
-                        : []),
-                  ],
+        body: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            footer: CustomFooter(
+              builder: (BuildContext context, LoadStatus mode) {
+                Widget body ;
+                if(mode==LoadStatus.idle){
+                  body =  Text("pull up load");
+                }
+                else if(mode==LoadStatus.loading){
+                  body = LoadingContainer(width: 40, height: 40);
+                }
+                else if(mode == LoadStatus.failed){
+                  body = Text("Load Failed!Click retry!");
+                }
+                else if(mode == LoadStatus.canLoading){
+                  body = Text("release to load more");
+                }
+                else{
+                  body = Text("No more Data");
+                }
+                return Container(
+                  height: 55.0,
+                  child: Center(child:body),
                 );
-              } else if (index == (_replies?.length ?? 0) + 1) {
-                return _showLoadMore
-                    ? Text('Load More')
-                    : SizedBox(
-                        height: 120,
-                      );
-              } else {
-                return _replies != null
-                    ? ReplyItem(
-                        key: ValueKey(_replies![index - 1].floor),
-                        reply: _replies![index - 1],
+              },
+            ),
+            header: WaterDropHeader(),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: ListView.separated(
+              itemCount: 1 + (_replies?.length ?? 0),
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _getTopicTitle().length > 0
+                          ? Container(
+                        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: Text(
+                          _getTopicTitle()
+                              .replaceAll(new RegExp(r'\r\n|\r|\n'), ' '),
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 24,
+                          ),
+                        ),
                       )
-                    : LoadingContainer();
-              }
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              if ((_replies != null && index < (_replies!.length))) {
-                return Divider(
-                  height: 0,
-                );
-              } else {
-                return SizedBox();
-              }
-            },
-          ),
-        ));
+                          : SizedBox(),
+                      _topicData != null
+                          ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TopicMetaInfo(_topicData!),
+                            ...(_topicData!.content != null
+                                ? [
+                              Container(
+                                  padding: EdgeInsets.fromLTRB(
+                                      10, 10, 10, 10),
+                                  child: HTMLContent(
+                                    content: _topicData!.content!,
+                                  ))
+                            ]
+                                : []),
+                            ...((_topicData!.subtles ?? []).length > 0
+                                ? [
+                              Divider(
+                                height: 0,
+                              ),
+                              ..._topicData!.subtles!
+                                  .asMap()
+                                  .entries
+                                  .map((entry) {
+                                return TopicSubtle(
+                                    subtle: entry.value,
+                                    index: entry.key);
+                              }).toList()
+                            ]
+                                : [])
+                          ])
+                          : _pageException is NoAuthException
+                          ? NoAuthMessage()
+                          : _pageException is NotFoundTopicException
+                          ? NotFoundTopicMessage()
+                          : LoadingContainer(),
+                      ...(replyInfo != null
+                          ? [
+                        Divider(
+                          height: 0,
+                        ),
+                        TopicReplyInfo(
+                            count: replyInfo['count'],
+                            time: replyInfo['lastReplyAt'])
+                      ]
+                          : []),
+                    ],
+                  );
+                } else {
+                  return _replies != null
+                      ? ReplyItem(
+                    key: ValueKey(_replies![index - 1].floor),
+                    reply: _replies![index - 1],
+                  )
+                      : LoadingContainer();
+                }
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                if ((_replies != null && index < (_replies!.length))) {
+                  return Divider(
+                    height: 0,
+                  );
+                } else {
+                  return SizedBox();
+                }
+              },
+            )));
   }
 }
