@@ -145,20 +145,24 @@ Future<List<TopicData>> getTabTopics(String tab) async {
 }
 
 Future getTopicAndReplies(int id, {int page = 1}) async {
-  final stopwatch = Stopwatch()..start();
-  print('topic $id start fetch');
   final http = new Http();
-  final String res = await http.getHTMLPC(
+  final String res = await http
+      .getHTMLPC(
     'https://www.v2ex.com/t/$id?p=$page',
-  );
+  )
+      .catchError((err) {
+    if (err != null && err.response != null && err.response.statusCode == 404) {
+      throw NotFoundTopicException();
+    } else {
+      throw err;
+    }
+  });
 
-  print('topic $id fetch success: ${stopwatch.elapsed}');
-  stopwatch.reset();
   var doc = parse(res);
 
   var userState = updateUserState(doc);
   if (!userState['isAuthed'] && hasLoginForm(doc)) {
-    throw (NoAuthException());
+    throw NoAuthException();
   }
 
   var $main = doc.getElementById('Main');
@@ -233,8 +237,6 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
         .map((e) => e.text.trim())
         .toList();
   }
-
-  print('topic $id parse success: ${stopwatch.elapsed}');
 
   final result = {
     "topic": TopicData(

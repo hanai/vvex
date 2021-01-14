@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vvex/exceptions.dart';
-import 'package:vvex/pages/topic_page/widgets/no_auth_message.dart';
 import 'package:vvex/services.dart';
 import 'package:vvex/types.dart';
 import 'package:vvex/widgets/html_content.dart';
@@ -11,6 +10,7 @@ import 'widgets/topic_meta_info.dart';
 import 'widgets/topic_reply_info.dart';
 import 'widgets/topic_subtle.dart';
 import 'widgets/top_bar.dart';
+import 'widgets/error_messages.dart';
 
 class TopicPage extends StatefulWidget {
   TopicPage({Key? key, this.title, required this.topicId}) : super(key: key);
@@ -53,7 +53,7 @@ class _TopicPageState extends State<TopicPage> {
       setState(() {
         _pageException = err;
       });
-    }, test: (e) => e is NoAuthException);
+    }, test: (e) => e is NoAuthException || e is NotFoundTopicException);
   }
 
   _loadMoreReply() {
@@ -171,7 +171,9 @@ class _TopicPageState extends State<TopicPage> {
                               ])
                         : _pageException is NoAuthException
                             ? NoAuthMessage()
-                            : LoadingContainer(),
+                            : _pageException is NotFoundTopicException
+                                ? NotFoundTopicMessage()
+                                : LoadingContainer(),
                     ...(replyInfo != null
                         ? [
                             Divider(
