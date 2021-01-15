@@ -110,7 +110,7 @@ class _TopicPageState extends State<TopicPage> {
   }
 
   RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
 
   @override
   Widget build(BuildContext context) {
@@ -125,25 +125,25 @@ class _TopicPageState extends State<TopicPage> {
             enablePullUp: true,
             footer: CustomFooter(
               builder: (BuildContext context, LoadStatus mode) {
-                Widget body ;
-                if(mode==LoadStatus.idle){
-                  body =  Text("pull up load");
-                }
-                else if(mode==LoadStatus.loading){
-                  body = LoadingContainer(width: 40, height: 40);
-                }
-                else if(mode == LoadStatus.failed){
+                Widget body;
+                if (mode == LoadStatus.idle) {
+                  body = Text("pull up load");
+                } else if (mode == LoadStatus.loading) {
+                  body = LoadingContainer(
+                    width: 40,
+                    height: 40,
+                    padding: EdgeInsets.all(0),
+                  );
+                } else if (mode == LoadStatus.failed) {
                   body = Text("Load Failed!Click retry!");
-                }
-                else if(mode == LoadStatus.canLoading){
+                } else if (mode == LoadStatus.canLoading) {
                   body = Text("release to load more");
-                }
-                else{
+                } else {
                   body = Text("No more Data");
                 }
                 return Container(
                   height: 55.0,
-                  child: Center(child:body),
+                  child: Center(child: body),
                 );
               },
             ),
@@ -161,71 +161,71 @@ class _TopicPageState extends State<TopicPage> {
                     children: [
                       _getTopicTitle().length > 0
                           ? Container(
-                        padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: Text(
-                          _getTopicTitle()
-                              .replaceAll(new RegExp(r'\r\n|\r|\n'), ' '),
-                          style: TextStyle(
-                            color: Color(0xFF333333),
-                            fontSize: 24,
-                          ),
-                        ),
-                      )
+                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              child: Text(
+                                _getTopicTitle()
+                                    .replaceAll(new RegExp(r'\r\n|\r|\n'), ' '),
+                                style: TextStyle(
+                                  color: Color(0xFF333333),
+                                  fontSize: 24,
+                                ),
+                              ),
+                            )
                           : SizedBox(),
                       _topicData != null
                           ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TopicMetaInfo(_topicData!),
-                            ...(_topicData!.content != null
-                                ? [
-                              Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      10, 10, 10, 10),
-                                  child: HTMLContent(
-                                    content: _topicData!.content!,
-                                  ))
-                            ]
-                                : []),
-                            ...((_topicData!.subtles ?? []).length > 0
-                                ? [
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                  TopicMetaInfo(_topicData!),
+                                  ...(_topicData!.content != null
+                                      ? [
+                                          Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  10, 10, 10, 10),
+                                              child: HTMLContent(
+                                                content: _topicData!.content!,
+                                              ))
+                                        ]
+                                      : []),
+                                  ...((_topicData!.subtles ?? []).length > 0
+                                      ? [
+                                          Divider(
+                                            height: 0,
+                                          ),
+                                          ..._topicData!.subtles!
+                                              .asMap()
+                                              .entries
+                                              .map((entry) {
+                                            return TopicSubtle(
+                                                subtle: entry.value,
+                                                index: entry.key);
+                                          }).toList()
+                                        ]
+                                      : [])
+                                ])
+                          : _pageException is NoAuthException
+                              ? NoAuthMessage()
+                              : _pageException is NotFoundTopicException
+                                  ? NotFoundTopicMessage()
+                                  : LoadingContainer(),
+                      ...(replyInfo != null
+                          ? [
                               Divider(
                                 height: 0,
                               ),
-                              ..._topicData!.subtles!
-                                  .asMap()
-                                  .entries
-                                  .map((entry) {
-                                return TopicSubtle(
-                                    subtle: entry.value,
-                                    index: entry.key);
-                              }).toList()
+                              TopicReplyInfo(
+                                  count: replyInfo['count'],
+                                  time: replyInfo['lastReplyAt'])
                             ]
-                                : [])
-                          ])
-                          : _pageException is NoAuthException
-                          ? NoAuthMessage()
-                          : _pageException is NotFoundTopicException
-                          ? NotFoundTopicMessage()
-                          : LoadingContainer(),
-                      ...(replyInfo != null
-                          ? [
-                        Divider(
-                          height: 0,
-                        ),
-                        TopicReplyInfo(
-                            count: replyInfo['count'],
-                            time: replyInfo['lastReplyAt'])
-                      ]
                           : []),
                     ],
                   );
                 } else {
                   return _replies != null
                       ? ReplyItem(
-                    key: ValueKey(_replies![index - 1].floor),
-                    reply: _replies![index - 1],
-                  )
+                          key: ValueKey(_replies![index - 1].floor),
+                          reply: _replies![index - 1],
+                        )
                       : LoadingContainer();
                 }
               },

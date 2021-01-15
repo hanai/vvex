@@ -11,19 +11,19 @@ class LoadingContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: this.padding,
-          child: SizedBox(
+    return Center(
+      child: Padding(
+        padding: this.padding,
+        child: SizedBox(
             width: this.width,
             height: this.height,
-            child: CircularProgressIndicator(),
-          ),
-        )
-      ],
+            child: Image.asset(
+              'assets/images/spinner.gif',
+              width: width,
+              height: height,
+              fit: BoxFit.contain,
+            )),
+      ),
     );
   }
 }

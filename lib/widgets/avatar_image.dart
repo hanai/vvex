@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vvex/widgets/loading_container.dart';
 import 'package:vvex/widgets/v_network_image.dart';
 
 class AvatarImage extends StatefulWidget {
@@ -36,7 +37,9 @@ class _AvatarImageState extends State<AvatarImage> {
         },
         placeholder: (context, url) => Padding(
           padding: EdgeInsets.all(4),
-          child: CircularProgressIndicator(),
+          child: LoadingContainer(
+            padding: EdgeInsets.all(0),
+          ),
         ),
         fit: BoxFit.contain,
       ),
