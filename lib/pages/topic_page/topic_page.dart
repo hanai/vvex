@@ -48,7 +48,7 @@ class _TopicPageState extends State<TopicPage> {
         setState(() {
           _topicData = res['topic'];
           _replies = res['replies'];
-          _curReplyPage = _topicData!.replyPageCount > 0 ? 1 : 0;
+          _curReplyPage = 1;
           _showLoadMore = _topicData!.replyPageCount > _curReplyPage;
         });
       }
@@ -128,7 +128,7 @@ class _TopicPageState extends State<TopicPage> {
                 Widget body;
                 if (mode == LoadStatus.idle) {
                   body = Text("pull up load");
-                } else if (mode == LoadStatus.loading) {
+                } else if (mode == LoadStatus.loading && _showLoadMore) {
                   body = LoadingContainer(
                     width: 40,
                     height: 40,

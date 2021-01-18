@@ -259,7 +259,7 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
 
 Future getNodeTopics(String name, {int page = 1}) async {
   final http = new Http();
-  final html = await http.getHTMLPC('https://www.v2ex.com/go/' + name);
+  final html = await http.getHTMLPC('https://www.v2ex.com/go/$name?p=$page');
   var $document = parse(html);
   var $cells = $document.querySelectorAll('#TopicsNode .cell');
 
@@ -311,5 +311,12 @@ Future getNodeTopics(String name, {int page = 1}) async {
         node: node);
   }).toList();
 
-  return topics;
+  var $pageInput = $document.querySelector('#Main .cell .page_input');
+  final totalPage =
+      $pageInput != null ? int.parse($pageInput.attributes['max']!) : 1;
+
+  return {
+    "topics": topics,
+    "pagination": {"totalPage": totalPage}
+  };
 }
