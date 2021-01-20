@@ -615,7 +615,7 @@ packages:
       name: pull_to_refresh
       url: "https://mirrors.tuna.tsinghua.edu.cn/dart-pub"
     source: hosted
-    version: "1.6.3"
+    version: "1.6.4"
   quiver:
     dependency: transitive
     description:
