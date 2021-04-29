@@ -30,10 +30,10 @@ class _HTMLContentState extends State<HTMLContent> {
     return Html(
         data: widget.content,
         customRender: {
-          "img": (context, parsedChild, attributes, element) {
-            String src = attributes['src'] ?? '';
-            return VNetworkImage(imageUrl: src);
-          },
+          // "img": (context, parsedChild, attributes, element) {
+          //   String src = attributes['src'] ?? '';
+          //   return VNetworkImage(imageUrl: src);
+          // },
         },
         style: {
           "a": Style(textDecoration: TextDecoration.none),
