@@ -43,21 +43,23 @@ class _HTMLContentState extends State<HTMLContent> {
               padding: EdgeInsets.zero,
               fontSize: FontSize(18)),
         },
-        onLinkTap: (url) {
-          if (url.startsWith('/member/')) {
-            _navigationService.navigateTo(router.MemberPageRoute,
-                arguments: {"username": url.substring(8)});
-          } else if (url.startsWith('mailto:')) {
-            launch(url, forceSafariVC: false, forceWebView: false);
-          } else {
-            RegExp topicReg = new RegExp(
-                r"^((https?:)?\/\/(www\.)?v2ex\.com)?\/t\/(\d+)(#.+)?$");
-            var match = topicReg.firstMatch(url);
-            if (match != null && match.groupCount == 5) {
-              _navigationService.navigateTo(router.TopicPageRoute,
-                  arguments: {"topicId": int.parse(match.group(4)!)});
+        onLinkTap: (url, context, attributes, element) {
+          if (url != null) {
+            if (url.startsWith('/member/')) {
+              _navigationService.navigateTo(router.MemberPageRoute,
+                  arguments: {"username": url.substring(8)});
+            } else if (url.startsWith('mailto:')) {
+              launch(url, forceSafariVC: false, forceWebView: false);
             } else {
-              BrowserUtil.open(url);
+              RegExp topicReg = new RegExp(
+                  r"^((https?:)?\/\/(www\.)?v2ex\.com)?\/t\/(\d+)(#.+)?$");
+              var match = topicReg.firstMatch(url);
+              if (match != null && match.groupCount == 5) {
+                _navigationService.navigateTo(router.TopicPageRoute,
+                    arguments: {"topicId": int.parse(match.group(4)!)});
+              } else {
+                BrowserUtil.open(url);
+              }
             }
           }
         });

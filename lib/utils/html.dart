@@ -5,7 +5,7 @@ Map<String, dynamic> extractUserState(Document doc) {
   final bool isAuthed = doc.querySelector('.member-activity-bar') != null;
   if (isAuthed) {
     final rightbar = doc.getElementById('Rightbar');
-    final $avatar = rightbar.querySelector('img.avatar');
+    final $avatar = rightbar!.querySelector('img.avatar')!;
     final String avatar = $avatar.attributes['src']!;
     final String username = $avatar.attributes['alt']!;
     return {"isAuthed": isAuthed, "username": username, "avatar": avatar};
@@ -32,7 +32,7 @@ String parseContent(Element $ele) {
   $ele.querySelectorAll('a[title^=\"在新窗口打开图片 \"]').forEach((e) {
     var $img = e.querySelector('img.embedded_image');
     if ($img != null) {
-      e.parentNode.insertBefore($img, e);
+      e.parentNode!.insertBefore($img, e);
       e.remove();
     }
   });
@@ -42,7 +42,7 @@ String parseContent(Element $ele) {
     if (secret != null && secret.length > 0) {
       final email = decodeEmail(secret);
       while (element.localName != 'a' && element.parent != null) {
-        element = element.parent;
+        element = element.parent!;
       }
       if (element.localName == 'a') {
         element.text = email;

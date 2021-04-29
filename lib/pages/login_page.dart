@@ -54,10 +54,10 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     final trs = loginForm.querySelectorAll('tr');
-    final fieldNameName = trs[0].querySelector('input').attributes['name']!;
+    final fieldNameName = trs[0].querySelector('input')!.attributes['name']!;
     final fieldPassName =
-        trs[1].querySelector('input[type="password"]').attributes['name']!;
-    final fieldCaptchaName = trs[3].querySelector('input').attributes['name']!;
+        trs[1].querySelector('input[type="password"]')!.attributes['name']!;
+    final fieldCaptchaName = trs[3].querySelector('input')!.attributes['name']!;
 
     var captchaUrl;
     var captchaDiv = loginForm.querySelector('div[style^="background-image"]');

@@ -11,12 +11,12 @@ import 'package:path_provider/path_provider.dart';
 
 class UAInterceptor extends InterceptorsWrapper {
   @override
-  Future onRequest(RequestOptions options) {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     options.headers.putIfAbsent(
         HttpHeaders.userAgentHeader,
         () =>
             'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1');
-    return super.onRequest(options);
+    return super.onRequest(options, handler);
   }
 }
 
@@ -30,8 +30,10 @@ class Http {
   factory Http() {
     getApplicationDocumentsDirectory().then((appDocDir) {
       final String appDocPath = appDocDir.path;
-      cookieJar = PersistCookieJar(dir: appDocPath + "/.cookies/");
-      _dio.interceptors.add(CookieManager(cookieJar));
+      cookieJar = PersistCookieJar(
+          ignoreExpires: false,
+          storage: FileStorage(appDocPath + "/.cookies/"));
+      _dio.interceptors.add(CookieManager(cookieJar!));
       _dio.interceptors.add(new UAInterceptor());
     });
     return _instance;
@@ -82,7 +84,7 @@ class Http {
     if (options == null) {
       options = Options();
     }
-    options.headers.putIfAbsent(
+    options.headers?.putIfAbsent(
         Headers.acceptHeader, () => 'text/html,application/xhtml+xml');
 
     options.responseType = ResponseType.plain;
@@ -104,7 +106,7 @@ class Http {
     if (options == null) {
       options = Options();
     }
-    options.headers.putIfAbsent(
+    options.headers?.putIfAbsent(
         HttpHeaders.userAgentHeader,
         () =>
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36');

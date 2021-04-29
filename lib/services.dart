@@ -91,7 +91,7 @@ Future<List<TopicData>> getTabTopics(String tab) async {
     return $cell.querySelector('.topic-link') != null;
   }).map(($cell) {
     final $topicLink = $cell.querySelector('.topic-link');
-    final String link = $topicLink.attributes['href']!;
+    final String link = $topicLink!.attributes['href']!;
     RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
     var match = reg.firstMatch(link);
     int topicId = 0;
@@ -106,7 +106,7 @@ Future<List<TopicData>> getTabTopics(String tab) async {
     var $topicInfo = $cell.querySelector('.topic_info');
     if ($topicInfo != null) {
       final $node = $topicInfo.querySelector('a.node');
-      final nodeTitle = $node.text!.trim();
+      final nodeTitle = $node!.text.trim();
       final nodeName = (new RegExp(r'\/go\/(.+)$'))
           .firstMatch($node.attributes['href']!)!
           .group(1)!;
@@ -117,14 +117,14 @@ Future<List<TopicData>> getTabTopics(String tab) async {
         var $lastReplyByLink = $lastReplyBy.querySelector('a');
         if ($lastReplyByLink != null) {
           lastReplyBy = $lastReplyByLink.text;
-          lastReplyAt = DTUtil.dp($time.attributes['title']!);
+          lastReplyAt = DTUtil.dp($time!.attributes['title']!);
         }
       }
 
       if (lastReplyBy != null) {
-        lastReplyAt = DTUtil.dp($time.attributes['title']!);
+        lastReplyAt = DTUtil.dp($time!.attributes['title']!);
       } else {
-        createdAt = DTUtil.dp($time.attributes['title']!);
+        createdAt = DTUtil.dp($time!.attributes['title']!);
       }
     }
 
@@ -133,7 +133,7 @@ Future<List<TopicData>> getTabTopics(String tab) async {
         title: $topicLink.text,
         member: MemberData(
             username: $cell.querySelector('strong')?.text ?? '',
-            avatar: $cell.querySelector('.avatar').attributes['src']!),
+            avatar: $cell.querySelector('.avatar')!.attributes['src']!),
         replyCount: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
         lastReplyAt: lastReplyAt,
         lastReplyBy: lastReplyBy,
@@ -166,28 +166,29 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
   }
 
   var $main = doc.getElementById('Main');
-  var $boxs = $main.querySelectorAll('.box');
+  var $boxs = $main!.querySelectorAll('.box');
 
   var $topicSection = $boxs[0];
   var $replySection = $boxs[1];
 
-  var topicTitle = $topicSection.querySelector('.header h1').text;
-  var topicMemberUsername = $topicSection.querySelector('.header .gray a').text;
+  var topicTitle = $topicSection.querySelector('.header h1')!.text;
+  var topicMemberUsername =
+      $topicSection.querySelector('.header .gray a')!.text;
   var topicMemberAvatar =
-      $topicSection.querySelector('.header .avatar').attributes['src'] ?? '';
+      $topicSection.querySelector('.header .avatar')?.attributes['src'] ?? '';
   var $topicContent =
       $topicSection.querySelector('.cell .topic_content'); // 部分 topic 仅有 title
   var topicContent = $topicContent != null ? parseContent($topicContent) : null;
 
   int topicCreated = DTUtil.dp(
-      $topicSection.querySelector('.header .gray span').attributes['title'] ??
+      $topicSection.querySelector('.header .gray span')?.attributes['title'] ??
           '');
 
   var subtles = $topicSection.querySelectorAll('.subtle').map((e) {
     return SubtleData(
         createdAt:
-            DTUtil.dp(e.querySelector('.fade span').attributes['title'] ?? ''),
-        content: e.querySelector('.topic_content').innerHtml);
+            DTUtil.dp(e.querySelector('.fade span')?.attributes['title'] ?? ''),
+        content: e.querySelector('.topic_content')!.innerHtml);
   }).toList();
 
   int replyCount = 0;
@@ -223,12 +224,12 @@ Future getTopicAndReplies(int id, {int page = 1}) async {
       return element.querySelector('.no') != null;
     }).map((e) {
       return ReplyData(
-          content: parseContent(e.querySelector('.reply_content')),
-          createdAt: DTUtil.dp(e.querySelector('.ago').attributes['title']!),
-          floor: int.parse(e.querySelector('.no').text),
+          content: parseContent(e.querySelector('.reply_content')!),
+          createdAt: DTUtil.dp(e.querySelector('.ago')!.attributes['title']!),
+          floor: int.parse(e.querySelector('.no')!.text),
           member: MemberData(
-            avatar: e.querySelector('.avatar').attributes['src']!,
-            username: e.querySelector('strong a').text,
+            avatar: e.querySelector('.avatar')!.attributes['src']!,
+            username: e.querySelector('strong a')!.text,
           ));
     }).toList();
   } else {
@@ -267,7 +268,7 @@ Future getNodeTopics(String name, {int page = 1}) async {
     return $cell.querySelector('.topic-link') != null;
   }).map(($cell) {
     final $topicLink = $cell.querySelector('.topic-link');
-    final String link = $topicLink.attributes['href']!;
+    final String link = $topicLink!.attributes['href']!;
     RegExp reg = new RegExp(r"\/t\/(\d+)[^0-9]+");
     var match = reg.firstMatch(link);
     int topicId = 0;
@@ -287,14 +288,14 @@ Future getNodeTopics(String name, {int page = 1}) async {
         var $lastReplyByLink = $lastReplyBy.querySelector('a');
         if ($lastReplyByLink != null) {
           lastReplyBy = $lastReplyByLink.text;
-          lastReplyAt = DTUtil.dp($time.attributes['title']!);
+          lastReplyAt = DTUtil.dp($time!.attributes['title']!);
         }
       }
 
       if (lastReplyBy != null) {
-        lastReplyAt = DTUtil.dp($time.attributes['title']!);
+        lastReplyAt = DTUtil.dp($time!.attributes['title']!);
       } else {
-        createdAt = DTUtil.dp($time.attributes['title']!);
+        createdAt = DTUtil.dp($time!.attributes['title']!);
       }
     }
 
@@ -303,7 +304,7 @@ Future getNodeTopics(String name, {int page = 1}) async {
         title: $topicLink.text,
         member: MemberData(
             username: $cell.querySelector('strong')?.text ?? '',
-            avatar: $cell.querySelector('.avatar').attributes['src']!),
+            avatar: $cell.querySelector('.avatar')!.attributes['src']!),
         replyCount: int.parse($cell.querySelector('.count_livid')?.text ?? '0'),
         lastReplyAt: lastReplyAt,
         lastReplyBy: lastReplyBy,

@@ -26,12 +26,13 @@ class UserService extends ChangeNotifier {
   }
 
   void setUserState(
-      {required bool isAuthed, String? avatar, String? username}) {
+      {required bool isAuthed,
+      required String avatar,
+      required String username}) {
     if (_isAuthed != isAuthed || _avatar != avatar || _username != username) {
       _isAuthed = isAuthed;
       if (isAuthed) {
         _avatar = avatar;
-
         _username = username;
       }
       SharedPreferences.getInstance().then((SharedPreferences prefs) {
